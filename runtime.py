@@ -48,6 +48,7 @@ async def input_choice(update,context):
 
 
 async def cancel(update,context):
+    context.user_data.pop('checkin_wizard',None)
     context.user_data.pop('ai_pending',None)
     context.user_data.pop('coach_pending',None)
     context.user_data.pop('current_exercise',None)
@@ -70,13 +71,17 @@ async def ready(app):
     await app.bot.set_my_short_description('Щоденник тренувань українською · вправи, повторення, кг та прогрес')
     await app.bot.set_my_name('Щоденник тренувань')
     commands = await app.bot.get_my_commands()
-    await app.bot.set_my_commands(list(commands) + [BotCommand('programs','Обрати орієнтир на 3 дні'),BotCommand('coachhelp','Профіль, PR та адаптація плану'),BotCommand('plan','Наступна сесія з джерелами'),BotCommand('ask','Питання до наукової бази'),BotCommand('sources','Джерела локальної бази'),BotCommand('status','Самопочуття або хвороба'),BotCommand('extra','Легкий четвертий день')])
+    await app.bot.set_my_commands(list(commands) + [BotCommand('programs','Обрати орієнтир на 3 дні'),BotCommand('coachhelp','Профіль, PR та адаптація плану'),BotCommand('plan','Наступна сесія з джерелами'),BotCommand('ask','Питання до наукової бази'),BotCommand('sources','Джерела локальної бази'),BotCommand('status','Самопочуття або хвороба'),BotCommand('extra','Легкий четвертий день'),BotCommand('checkin','Сон, енергія та час перед сесією'),BotCommand('block','План на 4–6 тижнів'),BotCommand('feedback','RIR, біль та складність вправи'),BotCommand('swap','Замінити вправу в плані'),BotCommand('weekly','Звіт за останні 7 днів'),BotCommand('weeklyai','Висновки за тиждень з джерелами'),BotCommand('backup','Локальна резервна копія')])
     print(f'Bot is running: https://t.me/{app.bot.username}',flush=True)
     if db.setting('owner') is None:
         print(f'To pair your account, send: /start {app.bot_data["pair_code"]}',flush=True)
         print(f'Open this link and press Start: https://t.me/{app.bot.username}?start={app.bot_data["pair_code"]}',flush=True)
     print('Keep this window open. Stop: Ctrl+C. Your data is saved in the data folder.',flush=True)
     app.job_queue.run_repeating(diary.reminder_job,interval=60,first=10)
+    from training_tools import weekly_job
+    from backups import backup_job
+    app.job_queue.run_repeating(weekly_job,interval=60,first=15)
+    app.job_queue.run_repeating(backup_job,interval=3600,first=1)
     async def check_stop(context):
         if (ROOT / 'stop.request').exists():
             (ROOT / 'stop.request').unlink()

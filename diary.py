@@ -189,9 +189,15 @@ async def extras(update, context):
     if not update.message or not update.message.text:
         return
     text = update.message.text.strip()
+    from training_tools import checkin_input
+    if await checkin_input(update,context):
+        raise ApplicationHandlerStop
     parts = text.split(maxsplit=1)
     cmd, arg = parts[0].split('@')[0].lower(), parts[1] if len(parts)>1 else ''
-    cmd = {'🧭 Програми':'/programs','📋 Мій план':'/plan','🧠 Налаштувати план':'/coachhelp'}.get(text,cmd)
+    buttons={'🧭 Програми':'/programs','📋 Мій план':'/plan','🧠 Налаштувати план':'/coachhelp',
+        '✅ Перед тренуванням':'/checkin','🗓 Блок тренувань':'/block','📆 Звіт за тиждень':'/weekly','💾 Резервна копія':'/backup'}
+    if text in buttons:
+        cmd,arg=buttons[text],''
     try:
         import programs
         if cmd in programs.COMMANDS:

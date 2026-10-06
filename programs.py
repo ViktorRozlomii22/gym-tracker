@@ -1,21 +1,19 @@
-"""Transparent, conservative training suggestions; no model-generated loads."""
+"""Persisted AI coaching with actual-workout feedback and approval."""
 import json
 import math
 from datetime import date, datetime, timedelta
 import database as db
 
-NAMES = {'squat':'Присідання', 'bench':'Жим лежачи', 'deadlift':'Станова тяга',
-         'press':'Жим стоячи', 'row':'Тяга штанги в нахилі', 'pulldown':'Тяга верхнього блока',
-         'curl':'Згинання рук з гантелями', 'triceps':'Розгинання рук на блоці',
-         'rdl':'Румунська тяга','legcurl':'Згинання ніг у тренажері','lateral':'Махи гантелями в сторони',
-         'calf':'Підйоми на носки у тренажері'}
+from exercise_catalog import NAMES
 # The catalog contains references, not hardcoded workout prescriptions.
 from coach_rag import references
 CATALOG = references()
 
 def load(uid):
-    return db.setting(f'coach:{uid}', {'profile':{},'prs':{},'program':None,'cursor':0,
-        'health':'ready','return_left':0,'completed':[], 'events':[], 'feedback':{},'pending':None})
+    defaults={'profile':{},'prs':{},'program':None,'cursor':0,'health':'ready','return_left':0,
+        'completed':[], 'events':[], 'feedback':{},'pending':None,'block':None,'block_draft':None,
+        'swap_draft':None,'checkin':None,'exercise_feedback':[],'weekly_enabled':False}
+    return dict(defaults,**db.setting(f'coach:{uid}',{}))
 
 def save(uid, state):
     db.set_setting(f'coach:{uid}', state)
@@ -54,6 +52,8 @@ def profile(state, text):
             raise ValueError('Поля: вік, зріст (см), вага (кг), досвід (роки), крок (кг), мета (сила/м’язи/загальна), обладнання зал. Обхвати: /measure.')
     state['profile'] = fields
     state['pending'] = None
+    state['swap_draft'] = None
+    state['block_draft'] = None
 
 def add_pr(state, text, today):
     bits = [x.strip() for x in text.split(';')]
@@ -73,6 +73,7 @@ def add_pr(state, text, today):
                          'e1rm':weight if reps==1 else weight*(1+reps/30)}
     state['feedback'] = {k:v for k,v in state['feedback'].items() if not k.startswith(key+':')}
     state['pending'] = None
+    state['swap_draft'] = None
 
 def recent(state, now):
     return [x for x in state['completed'] if now-timedelta(days=7) < datetime.fromisoformat(x['at']) <= now]
@@ -101,6 +102,9 @@ def make_plan(state, now, bonus=False):
     gap = (now-datetime.fromisoformat(state['completed'][-1]['at'])).days if state['completed'] else 0
     recovery = state['return_left']>0 or gap>=14
     from coach_rag import generate
+    from training_cycle import current_session
+    if not bonus:
+        current_session(state)  # Detect an exhausted block before starting inference.
     proposal = generate(state,now,bonus,recovery)
     plan = dict(proposal,day=now.date().isoformat(),cursor=state['cursor'],bonus=bonus,
                 recovery=recovery,program=state['program'])
@@ -147,7 +151,11 @@ def complete(state, uid, rir, now):
         actual.setdefault(key,[]).extend(normalize_exercise_sets(exercise['sets']))
     if not any(actual.get(item['key']) for item in plan['items']):
         raise ValueError('У щоденнику немає вправ із цього плану. Використовуй назви з плану.')
-    state['completed'].append({'at':now.isoformat(),'bonus':plan['bonus'],'training_id':training['training_id'],'plan':plan,'rir':rir,'actual':actual})
+    exercise_feedback={x['key']:x for x in state.get('exercise_feedback',[]) if x['training_id']==training['training_id']}
+    reported=[x['rir'] for x in exercise_feedback.values()]
+    effective_rir=min([rir]+reported)
+    state['completed'].append({'at':now.isoformat(),'bonus':plan['bonus'],'training_id':training['training_id'],
+        'plan':plan,'rir':effective_rir,'actual':actual,'feedback':exercise_feedback,'checkin':state.get('checkin')})
     if not plan['bonus']:
         state['cursor'] += 1
         state['return_left'] = max(0,state['return_left']-1)
@@ -155,6 +163,7 @@ def complete(state, uid, rir, now):
         if plan['recovery'] and len(state['completed'])>1 and (now-datetime.fromisoformat(state['completed'][-2]['at'])).days>=14:
             state['return_left'] = max(2,state['return_left'])
     state['pending'] = None
+    state['swap_draft'] = None
     state['health'] = 'ready'
     if not training['date_end']:
         db.finish_training(training['training_id'])
@@ -179,6 +188,8 @@ def set_status(state, text):
     else:
         raise ValueError('/status хворію | біль | втома | добре | одужав | дозволено')
     state['pending']=None
+    state['swap_draft']=None
+    state['block_draft']=None
     state['status_day']=date.today().isoformat()
     return result
 
@@ -195,11 +206,20 @@ PR — вже виконана вага; повторення 1–10; факти
 /status біль — пауза; /status дозволено — після оцінки фахівця
 /status втома або /status добре — самопочуття
 /extra — легкий четвертий день після трьох основних
+/checkin — сон, енергія, крепатура та час перед сесією, кнопками
+/block 4 — структура на 4–6 тижнів; /blockconfirm — прийняти
+/feedback Жим лежачи; 2; ні; 4; важкий останній підхід — RIR, біль, складність, примітка
+/swap Жим лежачи; лавка зайнята — заміна; /swapconfirm — прийняти
+/weekly — факти за 7 днів; /weeklyai — висновки ШІ з джерелами
+/weeklyremind on — автозвіт у неділю о 18:00; off — вимкнути
+/backup — локальна резервна копія; /backups — перелік; відновлення через RESTORE.cmd
 /coach вчора пропустив через роботу — локальний ШІ розбирає повідомлення; зміна тільки після /coachconfirm
 ШІ використовує локальні джерела (/sources), профіль і фактичну історію. /ask — питання до бази. /planconfirm — прийняти план, /planreject — відхилити.
 Розрахунок — стартова оцінка, не точне визначення твоєї сили. Зріст та обхвати не визначають кг. Усі плани — адаптації бота для дорослих; оригінали: /programs.'''
 
 COMMANDS = {'/programs','/program','/profile','/pr','/plan','/done','/skip','/status','/extra','/coachhelp','/coach','/coachconfirm','/ask','/sources','/planconfirm','/planreject'}
+from training_tools import COMMANDS as EXTRA_COMMANDS
+COMMANDS |= EXTRA_COMMANDS
 
 async def handle(update, context, cmd, arg):
     import asyncio
@@ -210,7 +230,10 @@ async def handle(update, context, cmd, arg):
         await update.message.reply_text('Цю зміну вже збережено. /plan — поточний план.')
         return
     mutating = True
-    if cmd=='/coachhelp':
+    if cmd in EXTRA_COMMANDS:
+        from training_tools import handle as extra_handle
+        text,mutating=await extra_handle(update,context,cmd,arg,state,now)
+    elif cmd=='/coachhelp':
         text=HELP; mutating=False
     elif cmd=='/programs':
         text='Обери одну програму. Це добірка, не науковий рейтинг; усі версії адаптовані ботом.\n\n'+'\n\n'.join(f'{p["title"]}\n/program {k}\n{p["url"]}' for k,p in CATALOG.items())
@@ -218,7 +241,9 @@ async def handle(update, context, cmd, arg):
     elif cmd=='/program':
         if arg not in CATALOG:
             raise ValueError('Обери: /program hypertrophy | madcow | 531 | bridge | fullbody')
-        state.update(program=arg,cursor=0,pending=None,feedback={})
+        if state.get('block'):
+            state.setdefault('block_history',[]).append(state['block'])
+        state.update(program=arg,cursor=0,pending=None,feedback={},block=None,block_draft=None,swap_draft=None)
         text='✅ Програму обрано. Дані й PR: /coachhelp. План: /plan.'
     elif cmd=='/profile':
         if not arg:
@@ -240,6 +265,7 @@ async def handle(update, context, cmd, arg):
         text='✅ План прийнято. Виконай розминку; записуй фактичні підходи й заверши через /done. /plan — перегляд.'
     elif cmd=='/planreject':
         state['pending']=None
+        state['swap_draft']=None
         text='Пропозицію відхилено. Можна оновити профіль/PR/самопочуття й повторити /plan.'
     elif cmd=='/sources':
         from coach_rag import library, source_text
@@ -257,6 +283,7 @@ async def handle(update, context, cmd, arg):
         if not arg or len(arg)>300:
             raise ValueError('Приклад: /skip робота. Якщо хворієш — /status хворію.')
         state['pending']=None
+        state['swap_draft']=None
         state.setdefault('skips',[]).append({'day':now.date().isoformat(),'reason':arg})
         text='Пропуск записано. Цикл не просувається, пропущені підходи не наздоганяємо. /plan'
     elif cmd=='/done':
@@ -283,4 +310,5 @@ async def handle(update, context, cmd, arg):
         state['events'].append(event)
         save(uid,state)
     from diary import send_chunks
-    await send_chunks(update.message,text)
+    if text:
+        await send_chunks(update.message,text)

@@ -28,7 +28,8 @@ class PackagingTests(unittest.TestCase):
     def test_portable_path_does_not_use_extraction_folder(self):
         root=Path(__file__).parent
         with tempfile.TemporaryDirectory() as tmp:
-            script="import sys; from pathlib import Path; sys.frozen=True; sys.executable=sys.argv[1]; import paths; assert paths.DATA_DIR == Path(sys.argv[1]).parent/'data'; print('ok')"
+            # Windows CI can return an 8.3 TEMP path (RUNNER~1); compare canonical paths.
+            script="import sys; from pathlib import Path; sys.frozen=True; sys.executable=sys.argv[1]; import paths; expected=(Path(sys.argv[1]).parent/'data').resolve(); assert paths.DATA_DIR == expected, (paths.DATA_DIR, expected); print('ok')"
             env=dict(os.environ,PYTHONPATH=str(root))
             env.pop('NEXTSET_DATA_DIR',None)
             result=subprocess.run([sys.executable,'-c',script,str(Path(tmp)/'NextSet.exe')],env=env,capture_output=True,text=True)

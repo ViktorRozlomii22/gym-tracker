@@ -29,7 +29,7 @@ async def guard(update,context):
         expected = '/start ' + context.application.bot_data['pair_code']
         if secrets.compare_digest(update.message.text or '',expected):
             db.set_setting('owner',update.effective_user.id)
-            print('Підключено власника. Бот готовий.',flush=True)
+            print('Owner paired. Bot is ready.',flush=True)
             return
         raise ApplicationHandlerStop
     if owner != update.effective_user.id:
@@ -71,9 +71,9 @@ async def ready(app):
     await app.bot.set_my_name('Щоденник тренувань')
     commands = await app.bot.get_my_commands()
     await app.bot.set_my_commands(list(commands) + [BotCommand('programs','Обрати орієнтир на 3 дні'),BotCommand('coachhelp','Профіль, PR та адаптація плану'),BotCommand('plan','Наступна сесія з джерелами'),BotCommand('ask','Питання до наукової бази'),BotCommand('sources','Джерела локальної бази'),BotCommand('status','Самопочуття або хвороба'),BotCommand('extra','Легкий четвертий день')])
-    print(f'Бот активний: https://t.me/{app.bot.username}',flush=True)
+    print(f'Bot is running: https://t.me/{app.bot.username}',flush=True)
     if db.setting('owner') is None:
-        print(f'Для підключення надішли боту: /start {app.bot_data["pair_code"]}',flush=True)
+        print(f'To pair your account, send: /start {app.bot_data["pair_code"]}',flush=True)
         print(f'Open this link and press Start: https://t.me/{app.bot.username}?start={app.bot_data["pair_code"]}',flush=True)
     print('Keep this window open. Stop: Ctrl+C. Your data is saved in the data folder.',flush=True)
     app.job_queue.run_repeating(diary.reminder_job,interval=60,first=10)
@@ -141,12 +141,12 @@ def main():
     try:
         msvcrt.locking(lock.fileno(),msvcrt.LK_NBLCK,1)
     except OSError:
-        print('Бот уже працює. Другий запуск не потрібен.',flush=True)
+        print('The bot is already running. A second instance is not needed.',flush=True)
         return
     load_dotenv(ROOT / '.env')
     token = os.getenv('BOT_TOKEN')
     if not token:
-        print('Додай BOT_TOKEN до локального файлу .env.',flush=True)
+        print('Add BOT_TOKEN to your local .env file.',flush=True)
         return
     db.ensure_bot_schema()
     if (ROOT / 'stop.request').exists():

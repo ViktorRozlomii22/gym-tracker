@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import redirect_stdout
 import io
 import tempfile
 import unittest
@@ -109,7 +110,10 @@ class Tests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ApplicationHandlerStop):
             await guard(self.update,self.ctx)
         self.update.effective_chat.type='private'
-        await guard(self.update,self.ctx)
+        # Redirected Windows output may use cp1252 rather than UTF-8.
+        with io.TextIOWrapper(io.BytesIO(),encoding='cp1252',errors='strict') as console:
+            with redirect_stdout(console):
+                await guard(self.update,self.ctx)
         self.assertEqual(db.setting('owner'),42)
         self.update.effective_user=SimpleNamespace(id=43)
         with self.assertRaises(ApplicationHandlerStop):

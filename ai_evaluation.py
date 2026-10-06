@@ -14,7 +14,7 @@ def athlete(now):
         'program':'fullbody','cursor':0,'health':'ready','return_left':0,'completed':[],
         'events':[],'feedback':{},'pending':None,'block':None,'exercise_feedback':[],'checkin':None}
 
-def run_suite(destination=None):
+def run_suite(destination=None, selected=None):
     from ai_setup import available_models
     models=available_models()
     if models is None or not any(m==rag.model_name() or m==rag.model_name()+':latest' for m in models):
@@ -24,6 +24,8 @@ def run_suite(destination=None):
     now=datetime.now(); base=athlete(now)
     cases=[]
     def record(name, action):
+        if selected is not None and name not in selected:
+            return
         print('Evaluating: '+name,flush=True)
         started=time.monotonic()
         try:

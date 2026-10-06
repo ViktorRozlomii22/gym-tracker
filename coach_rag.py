@@ -1,5 +1,6 @@
 """Small local retrieval-augmented coach. No fine-tuning, network search or cloud calls."""
 import hashlib
+import copy
 import json
 import math
 import os
@@ -36,9 +37,28 @@ def model_name():
     return os.getenv('OLLAMA_MODEL','qwen3:1.7b')
 
 def call_model(system, payload, schema):
+    schema=copy.deepcopy(schema)
+    ids=[c['id'] for c in payload.get('sources',[])]
+    exercises=list(payload.get('choices') or payload.get('exercise_ids') or {})
+    def constrain(node):
+        if isinstance(node,dict):
+            for key,value in node.get('properties',{}).items():
+                if key=='citations' and ids:
+                    value.update(minItems=1,maxItems=4)
+                    value['items']['enum']=ids
+                if key=='exercise' and exercises:
+                    value['enum']=exercises
+            for value in node.values(): constrain(value)
+        elif isinstance(node,list):
+            for value in node: constrain(value)
+    constrain(schema)
+    for field in ('answer','rationale','uncertainty','limitations'):
+        value=schema.get('properties',{}).get(field)
+        if value:
+            value.update(minLength=1,maxLength=900 if field=='answer' else 350)
     body={'model':model_name(),'stream':False,'think':False,'keep_alive':0,
           'format':schema,'options':{'temperature':0.2,'num_ctx':8192,'num_predict':2600 if 'weeks' in schema.get('properties',{}) else 1400},
-          'messages':[{'role':'system','content':system+' /no_think'},
+          'messages':[{'role':'system','content':system+' Keep prose concise: rationale <=45 words; uncertainty <=25 words; each exercise reason <=15 words. /no_think'},
                       {'role':'user','content':json.dumps(payload,ensure_ascii=False)}]}
     request=urllib.request.Request('http://127.0.0.1:11434/api/chat',json.dumps(body).encode(),{'Content-Type':'application/json'})
     try:
@@ -153,11 +173,11 @@ def validate_plan(result, state, now, cards, bonus, recovery):
             'model':os.getenv('OLLAMA_MODEL','qwen3:1.7b'),'approved':False}
 
 PLAN_SCHEMA={'type':'object','properties':{
-    'insufficient':{'type':'boolean'},'rationale':{'type':'string'},'uncertainty':{'type':'string'},
+    'insufficient':{'type':'boolean'},'rationale':{'type':'string','maxLength':350},'uncertainty':{'type':'string','maxLength':250},
     'citations':{'type':'array','items':{'type':'string'}},
-    'items':{'type':'array','items':{'type':'object','properties':{
+    'items':{'type':'array','minItems':1,'maxItems':6,'items':{'type':'object','properties':{
         'exercise':{'type':'string'},'sets':{'type':'integer'},'reps':{'type':'integer'},'rir':{'type':'integer'},
-        'kg':{'type':['number','null']},'reason':{'type':'string'},'citations':{'type':'array','items':{'type':'string'}}},
+        'kg':{'type':['number','null']},'reason':{'type':'string','minLength':1,'maxLength':140},'citations':{'type':'array','minItems':1,'maxItems':4,'items':{'type':'string'}}},
         'required':['exercise','sets','reps','rir','kg','reason','citations'],'additionalProperties':False}}},
     'required':['insufficient','rationale','uncertainty','citations','items'],'additionalProperties':False}
 

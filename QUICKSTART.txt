@@ -17,6 +17,13 @@ Stop: Ctrl+C or double-click STOP.cmd.
 Do not run the same bot token on two computers at once.
 
 BACKUP / MOVE TO ANOTHER PC
+The app creates one local backup per day in data/backups (latest 14).
+/backup creates another snapshot. To restore, stop the bot and open
+RESTORE.cmd. Choose a backup and type RESTORE; the current database is
+backed up before replacement. Archives contain your diary, not your token.
+For a new PC, copy an archive into data/backups, restore, then start the
+app and enter your token if needed. Keep the old instance stopped.
+
 Stop the app, then copy the data folder. It contains private credentials
 and your diary. Place it beside NextSet.exe on your home PC before starting.
 For an update, replace the program files and keep your data folder.
@@ -28,12 +35,24 @@ run SETUP_AI.cmd again to download the model. Later bot starts also start
 the local AI service. Use /ai and review every proposal before /confirm.
 
 Full English documentation:
-https://github.com/Mochalka791/gym-tracker
+https://github.com/ViktorRozlomii22/gym-tracker
 
 This app is unsigned. Download it from your own repository release or build
 it from source. License and attribution are included in this folder.
 
 TRAINING PLANS
 In Telegram: /programs, then /coachhelp for profile and PR setup.
-Five orientations for experienced lifters; Qwen generates individual proposals from local evidence. AI setup is required for coaching. Use /planconfirm to accept, /ask for evidence-based explanations. Experimental: real-model quality is not yet validated. /status for illness or fatigue, /extra for a light fourth day.
+Five orientations for experienced lifters; Qwen generates individual
+proposals from local evidence. AI setup is required for coaching.
+/block 4 or /block 6 proposes a recurring block; /blockconfirm accepts.
+/checkin records sleep, energy, soreness and available time with buttons.
+/planconfirm accepts the next session; log actual work, then /done.
+/feedback records exercise effort and pain; /swap proposes an equipment
+alternative, accepted with /swapconfirm (then /planconfirm).
+/weekly shows your week; /weeklyai adds source-grounded interpretation.
+/weeklyremind on enables a Sunday report while the PC is awake.
+/status for illness or fatigue, /extra for a light fourth day.
+EVALUATE_AI.cmd checks six synthetic cases against your real local model.
+Coaching is experimental. App checks do not prove scientific correctness.
 Read PROGRAMS.md for details and limitations.
+Read TRAINING_GUIDE.md for the new tools and backup restoration.

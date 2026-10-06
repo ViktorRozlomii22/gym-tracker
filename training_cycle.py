@@ -52,11 +52,11 @@ def validate_block(result, weeks, cards):
 
 BLOCK_SCHEMA={'type':'object','properties':{
  'insufficient':{'type':'boolean'},'rationale':{'type':'string'},'citations':{'type':'array','items':{'type':'string'}},
- 'weeks':{'type':'array','items':{'type':'string'}},
- 'sessions':{'type':'array','items':{'type':'object','properties':{
-   'title':{'type':'string'},'items':{'type':'array','items':{'type':'object','properties':{
-    'exercise':{'type':'string'},'sets':{'type':'array','items':{'type':'integer'}},
-    'reps':{'type':'array','items':{'type':'integer'}},'rir':{'type':'array','items':{'type':'integer'}}},
+ 'weeks':{'type':'array','minItems':4,'maxItems':6,'items':{'type':'string','minLength':1,'maxLength':140}},
+ 'sessions':{'type':'array','minItems':3,'maxItems':3,'items':{'type':'object','properties':{
+   'title':{'type':'string','minLength':1,'maxLength':70},'items':{'type':'array','minItems':1,'maxItems':6,'items':{'type':'object','properties':{
+    'exercise':{'type':'string'},'sets':{'type':'array','minItems':2,'maxItems':2,'items':{'type':'integer'}},
+    'reps':{'type':'array','minItems':2,'maxItems':2,'items':{'type':'integer'}},'rir':{'type':'array','minItems':2,'maxItems':2,'items':{'type':'integer'}}},
     'required':['exercise','sets','reps','rir'],'additionalProperties':False}}},
     'required':['title','items'],'additionalProperties':False}}},
  'required':['insufficient','rationale','citations','weeks','sessions'],'additionalProperties':False}

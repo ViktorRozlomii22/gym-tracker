@@ -92,7 +92,8 @@ def make_plan(state, now, bonus=False):
     if workouts and now-datetime.fromisoformat(workouts[-1]['at']) < timedelta(hours=48):
         raise ValueError('Від останньої записаної сесії ще не минуло 48 годин. Зараз відновлення; план доступний пізніше.')
     if bonus:
-        if state['health']!='good' or state.get('status_day')!=now.date().isoformat() or state['return_left'] or len(workouts)!=3 or any(x['bonus'] or x['rir']<3 for x in workouts):
+        from coach_rag import fatigued
+        if state['health']!='good' or fatigued(state,now) or state.get('status_day')!=now.date().isoformat() or state['return_left'] or len(workouts)!=3 or any(x['bonus'] or x['rir']<3 for x in workouts):
             raise ValueError('Додатковий день доступний після 3 основних сесій за 7 днів, за доброго самопочуття (/status добре), без повернення після паузи. Він легкий і не змінює основний цикл.')
     elif sum(not x['bonus'] for x in workouts)>=3 or len(workouts)>=4:
         raise ValueError('Три основні сесії за останні 7 днів уже виконано. Відпочинь або перевір /extra.')
@@ -254,7 +255,7 @@ async def handle(update, context, cmd, arg):
         add_pr(state,arg,now.date()); text='✅ PR збережено. /plan — оцінка робочої ваги.'
     elif cmd in ('/plan','/extra'):
         state['measurements']=[{'date':m['date'],'measurements':m['measurements'][:500]} for m in db.get_measurements_history(uid,limit=3)]
-        await update.message.reply_text('🧠 Шукаю джерела й готую сесію локально. На слабкому ПК це може зайняти до 3 хвилин…')
+        await update.message.reply_text('🧠 Шукаю джерела й готую сесію локально. На слабкому ПК запит може тривати до 6 хвилин…')
         text=render(await asyncio.to_thread(make_plan,state,now,cmd=='/extra'))
     elif cmd=='/planconfirm':
         if not state['pending'] or state['pending']['day']!=now.date().isoformat():

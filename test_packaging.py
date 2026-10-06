@@ -25,6 +25,16 @@ class PackagingTests(unittest.TestCase):
             with patch.object(launcher,'DATA_DIR',path),patch('getpass.getpass',side_effect=AssertionError('should not prompt')):
                 launcher.configure()
 
+    def test_token_update_preserves_ai_configuration(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'.env'
+            path.write_text('NEXTSET_AI=1\nOLLAMA_MODEL=qwen3:1.7b\nBOT_TOKEN=old\n')
+            launcher.save_token('123456:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',path)
+            lines=path.read_text().splitlines()
+            self.assertIn('NEXTSET_AI=1',lines)
+            self.assertIn('OLLAMA_MODEL=qwen3:1.7b',lines)
+            self.assertEqual(sum(x.startswith('BOT_TOKEN=') for x in lines),1)
+
     def test_portable_path_does_not_use_extraction_folder(self):
         root=Path(__file__).parent
         with tempfile.TemporaryDirectory() as tmp:

@@ -20,7 +20,7 @@ That's it. Leave the window open while using the bot. Next time, just double-cli
 
 ## Adaptive plans for experienced lifters
 
-Choose among five program orientations for three training days with `/programs`. Enter your profile and recent PRs, request `/plan`, log actual sets, then report effort with `/done`. Illness, missed sessions and an optional light fourth day are supported. Qwen generates individual proposals from a local research library and your history; source links, numeric checks and explicit approval accompany each plan. This is RAG, not model fine-tuning. Real-model coaching quality has not yet been validated. See [training plans and exact adaptation rules](docs/PROGRAMS.md).
+Choose among five program orientations for three training days with `/programs`. Enter your profile and recent PRs, request a stable 4–6 week `/block`, check in before training, then request `/plan` and record actual sets and exercise feedback. Illness, missed sessions, equipment substitutions and an optional light fourth day are supported. Qwen generates individual proposals from a local research library and your history; source links, numeric checks and explicit approval accompany each plan. This is RAG, not model fine-tuning. Coaching remains experimental. See the [training tools guide](docs/TRAINING_GUIDE.md) and [adaptation rules](docs/PROGRAMS.md).
 
 ## What you can do
 
@@ -38,6 +38,13 @@ Choose among five program orientations for three training days with `/programs`.
 | Inactivity reminders | `/remind 10`; disable with `/remind 0` |
 | Excel / CSV export | **📤 Експорт даних** in the menu |
 | Optional local AI | `/ai сьогодні жим лежачи 3 по 10 на 60 кг`, then `/confirm` |
+| Stable training block | `/block 4`, then `/blockconfirm` |
+| Pre-workout check-in | `/checkin`, answer four button prompts |
+| Exercise effort and pain | `/feedback Жим лежачи; 2; ні; 4` |
+| Equipment substitution | `/swap Жим лежачи; лавка зайнята`, then `/swapconfirm` |
+| Weekly summary and explanation | `/weekly`, `/weeklyai`, `/weeklyremind on` |
+| Local backup and restore | `/backup`, `/backups`, **RESTORE.cmd** |
+| Test your real local model | **EVALUATE_AI.cmd** |
 
 `3x10` means **three sets of ten repetitions**. Quick entries save immediately; guided entries save when you press **💾 Зберегти вправу**. Finish a workout through **🏁 Завершити тренування**. Saved exercises are visible in history even before the workout ends.
 
@@ -61,10 +68,12 @@ The app creates a **`data/`** folder beside `NextSet.exe`:
 data/
   .env                # private bot token
   nextset.sqlite3      # workouts, measurements, pairing and settings
+  backups/            # latest 14 local database snapshots, no bot token
+  evaluation/         # optional synthetic real-model evaluation reports
   cache/              # generated local cache
 ```
 
-Back up `data/` while the bot is stopped. To move to another PC, stop the old copy, copy this folder beside the new executable, and start the new copy. For an upgrade, replace the program files and keep `data/`. **Never upload `data/` or your token to GitHub.** The files are local but not separately encrypted; Telegram still processes messages and uploaded charts.
+The running bot creates one local database backup per day. `/backup` creates another. Stop the bot and use **RESTORE.cmd** to restore a verified snapshot; your current database is backed up first and your token is preserved. To move PCs, copy a snapshot into `data/backups/` on the new PC and restore it, then enter your token there. You can also copy the entire `data/` folder while stopped. For an upgrade, replace the program files and keep `data/`. **Never upload `data/` or your token to GitHub.** The files are local but not separately encrypted; Telegram still processes messages and uploaded charts.
 
 ## Running from source
 

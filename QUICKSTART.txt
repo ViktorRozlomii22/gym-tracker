@@ -1,0 +1,39 @@
+NEXTSET UA — YOUR TELEGRAM TRAINING DIARY
+========================================
+
+1. Extract the entire ZIP into Documents or another writable folder.
+2. Double-click NextSet.exe. No Python installation is needed.
+3. First run only: paste your bot token from https://t.me/BotFather.
+   The input is hidden. Keep the token private.
+4. Open the pairing link shown in the window and press Start in Telegram.
+5. Send: Жим лежачи 3x10 60 кг
+
+History: /history
+Chart: /graph 30 Жим лежачи
+Help: /help
+
+Leave the app open and the PC awake. Next time just open NextSet.exe.
+Stop: Ctrl+C or double-click STOP.cmd.
+Do not run the same bot token on two computers at once.
+
+BACKUP / MOVE TO ANOTHER PC
+Stop the app, then copy the data folder. It contains private credentials
+and your diary. Place it beside NextSet.exe on your home PC before starting.
+For an update, replace the program files and keep your data folder.
+
+OPTIONAL LOCAL AI
+The app works without AI. Double-click SETUP_AI.cmd once.
+If Ollama is missing, install it from the official page that opens, then
+run SETUP_AI.cmd again to download the model. Later bot starts also start
+the local AI service. Use /ai and review every proposal before /confirm.
+
+Full English documentation:
+https://github.com/Mochalka791/gym-tracker
+
+This app is unsigned. Download it from your own repository release or build
+it from source. License and attribution are included in this folder.
+
+TRAINING PLANS
+In Telegram: /programs, then /coachhelp for profile and PR setup.
+Five orientations for experienced lifters; Qwen generates individual proposals from local evidence. AI setup is required for coaching. Use /planconfirm to accept, /ask for evidence-based explanations. Experimental: real-model quality is not yet validated. /status for illness or fatigue, /extra for a light fourth day.
+Read PROGRAMS.md for details and limitations.

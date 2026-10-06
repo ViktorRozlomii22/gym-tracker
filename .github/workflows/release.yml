@@ -1,0 +1,29 @@
+name: Windows release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.lock -r requirements-build.txt
+      - run: python scripts/check_release.py
+      - run: python -m unittest discover -p "test_*.py" -v
+      - run: python scripts/build_windows.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NextSet-UA-Windows
+          path: release/NextSet-UA-Windows.zip*
+      - name: Publish tagged release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$env:RELEASE_TAG" release/NextSet-UA-Windows.zip release/NextSet-UA-Windows.zip.sha256 --title "NextSet UA $env:RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md --verify-tag

@@ -31,10 +31,11 @@ def main():
     release.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='nextset-release-') as tmp:
         stage=Path(tmp)
-        for filename in ['QUICKSTART.txt','STOP.cmd','SETUP_AI.cmd','LICENSE']:
+        for filename in ['QUICKSTART.txt','STOP.cmd','SETUP_AI.cmd','RESTORE.cmd','EVALUATE_AI.cmd','LICENSE']:
             shutil.copy2(ROOT/filename,stage/filename)
         shutil.copy2(executable,stage/'NextSet.exe')
         shutil.copy2(ROOT/'docs'/'PROGRAMS.md',stage/'PROGRAMS.md')
+        shutil.copy2(ROOT/'docs'/'TRAINING_GUIDE.md',stage/'TRAINING_GUIDE.md')
         licenses=stage/'THIRD_PARTY_LICENSES'
         licenses.mkdir()
         runtime_names=[line.split('==')[0] for line in (ROOT/'requirements.lock').read_text().splitlines() if '==' in line]

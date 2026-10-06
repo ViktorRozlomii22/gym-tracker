@@ -26,4 +26,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$env:RELEASE_TAG" release/NextSet-UA-Windows.zip release/NextSet-UA-Windows.zip.sha256 --title "NextSet UA $env:RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md --verify-tag
+        run: |
+          gh release view "$env:RELEASE_TAG" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload "$env:RELEASE_TAG" release/NextSet-UA-Windows.zip release/NextSet-UA-Windows.zip.sha256 --clobber
+          } else {
+            gh release create "$env:RELEASE_TAG" release/NextSet-UA-Windows.zip release/NextSet-UA-Windows.zip.sha256 --title "NextSet UA $env:RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md --verify-tag
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

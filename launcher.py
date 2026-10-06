@@ -15,7 +15,9 @@ def save_token(token, path):
     path.parent.mkdir(parents=True,exist_ok=True)
     # Atomic update; token is never printed or passed as a process argument.
     temporary = path.with_suffix('.tmp')
-    temporary.write_text('BOT_TOKEN=' + token + '\n', encoding='utf-8')
+    existing=path.read_text(encoding='utf-8').splitlines() if path.exists() else []
+    lines=[line for line in existing if not re.match(r'^\s*(?:export\s+)?BOT_TOKEN\s*=',line)]
+    temporary.write_text('\n'.join(lines+['BOT_TOKEN='+token])+'\n', encoding='utf-8')
     temporary.replace(path)
 
 
@@ -75,9 +77,16 @@ def self_check():
             from coach_rag import library, retrieve, references
             assert len(library()['cards']) >= 7 and len(references())==5
             assert retrieve('гіпертрофія обсяг')
+            from unittest.mock import patch
+            import backups
+            with patch.object(backups,'DATA_DIR',Path(tmp)):
+                snapshot=backups.create_backup()
+                db.set_setting('smoke_marker','temporary')
+                backups.restore_backup(snapshot)
+                assert db.setting('smoke_marker') is None
         finally:
             db.DB_PATH = original
-    print('SELF-CHECK PASSED: database, parser, charts, Excel, local evidence retrieval and Telegram application. No LLM started.')
+    print('SELF-CHECK PASSED: database, parser, charts, Excel, backup/restore, local evidence retrieval and Telegram application. No LLM started.')
 
 
 def main():
@@ -96,6 +105,16 @@ def main():
     print('\n  NEXTSET UA\n  Your private training diary in Telegram\n' + '  ' + '-'*43)
     print(f'  Data folder: {DATA_DIR}\n')
     try:
+        if '--restore' in sys.argv:
+            from backups import restore_console
+            restore_console()
+            return
+        if '--evaluate-ai' in sys.argv:
+            from dotenv import load_dotenv
+            load_dotenv(DATA_DIR/'.env')
+            from ai_evaluation import main as evaluate
+            evaluate()
+            return
         if '--setup-ai' in sys.argv:
             from ai_setup import setup
             setup()

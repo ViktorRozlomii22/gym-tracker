@@ -1,0 +1,11 @@
+[project]
+name = "nextset-ua"
+version = "1.0.0"
+description = "A private Ukrainian-language Telegram training diary for Windows"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "Apache-2.0 AND MIT"
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["test_*.py"]

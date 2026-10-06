@@ -1,0 +1,30 @@
+# User data and credentials — never publish these.
+data/
+.env
+.env.*
+!.env.example
+*.sqlite3*
+*.db
+*.log
+*.pid
+.running.lock
+stop.request
+
+# Local dependencies and generated files.
+.packages/
+.venv/
+__pycache__/
+*.py[cod]
+.mpl/
+.pytest_cache/
+build/
+dist/
+release/
+*.exe
+*.zip
+
+# Editor/OS metadata.
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

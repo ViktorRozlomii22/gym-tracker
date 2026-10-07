@@ -195,6 +195,16 @@ def load_limits(state, now):
                     limits[key]=max(valid); break
     return limits
 
+def plan_notice(bonus=False, recovery=False):
+    if recovery:
+        return 'Легка пропозиція для поступового повернення. Знижене навантаження — запобіжний захід застосунку, а не медичний допуск.'
+    if bonus:
+        return 'Необов’язкова легка сесія. Перевір самопочуття та фактичний запас повторень.'
+    return 'Індивідуальна пропозиція ШІ. Джерела описують загальні принципи та не доводять оптимальність цього точного плану.'
+
+def evidence_text(cards):
+    return '\n\n'.join(f"[{c['id']}] {c['title']}\n{c.get('summary_uk',c['summary'])}\nМежі висновку: {c.get('limitations_uk',c['limitations'])}\n{c['url']}" for c in cards)
+
 def validate_plan(result, state, now, cards, bonus, recovery):
     from programs import NAMES, round_down
     if not isinstance(result,dict) or result.get('insufficient') is not False:
@@ -244,13 +254,13 @@ def validate_plan(result, state, now, cards, bonus, recovery):
         if (recovery or bonus) and (item['sets']>2 or item['rir']<3):
             raise ValueError('Повернення або додаткова сесія має бути легкою.')
         validated.append({'key':key,'sets':item['sets'],'reps':item['reps'],'rir':item['rir'],'load_ratio':ratio,
-                          'weight':weight,'basis':clean_text(item.get('reason'),240),
+                          'weight':weight,'basis':('Стартова оцінка за силовою опорою; перевір фактичний RIR.' if weight is not None else 'Немає визначеної ваги; калібруй її на розминці за цільовим RIR.'),
                           'citations':citations(item.get('citations'),cards)})
     if sum(x['sets'] for x in validated)>set_budget(state,now,bonus or recovery):
         raise ValueError('Завеликий обсяг запропонованої сесії.')
     ids=citations(result.get('citations'),cards)
     selected=set(ids)|{i for item in validated for i in item['citations']}
-    return {'items':validated,'rationale':clean_text(result.get('rationale')),
+    return {'items':validated,'rationale':plan_notice(bonus,recovery),
             'uncertainty':clean_text(result.get('uncertainty'),500),
             'sources':[c for c in cards if c['id'] in selected],
             'knowledge_version':library()['version'],'knowledge_sha256':library()['sha256'],
@@ -357,7 +367,7 @@ def answer(question, state, now):
     if not isinstance(result,dict) or result.get('insufficient') is not False:
         raise ValueError('Недостатньо надійної інформації в базі для відповіді.')
     ids=citations(result.get('citations'),cards)
-    return clean_text(result.get('answer'),1800)+'\n\nМежі висновку: '+clean_text(result.get('limitations'),600)+'\n\n'+source_text([c for c in cards if c['id'] in ids])
+    return 'Відомості з перевіреної локальної бази (узагальнення досліджень, не персональний припис):\n\n'+evidence_text([c for c in cards if c['id'] in ids])
 
 def source_text(cards):
     return 'Джерела (посилання перевірено; тлумачення ШІ може бути помилковим):\n'+'\n'.join(f'[{c["id"]}] {c["title"]}\n{c["url"]}' for c in cards)

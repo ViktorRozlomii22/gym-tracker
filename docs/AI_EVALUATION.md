@@ -19,3 +19,7 @@ Application acceptance is a guard result, not proof of source entailment or appr
 The evidence file retains original English summaries and limitations alongside Ukrainian translations. Only the Ukrainian evidence text, ID and original source title enter coaching prompts. The corpus hash records this change. The general uncertainty notice is an application disclosure, so the model cannot truncate or replace it with an invented guarantee.
 
 Whole-body block JSON requires lower-body, push and pull slots, followed by optional accessory slots. The exercise within each slot and all numeric ranges remain model decisions. App validation additionally rejects duplicate exercises and excessive per-movement duplication. This generation constraint was added after a real model still produced an unbalanced block despite correct prompt instructions.
+
+## Grounded display
+
+Real outputs still included unsupported interpretations such as treating high RIR as a hypertrophy advantage. The app therefore replaces generated plan rationales and exercise explanations with truthful product notices and reference/calibration facts. Conceptual Q&A displays the selected reviewed source summaries and their limitations directly, rather than trusting a small model to paraphrase scientific conclusions. Numeric workout choices remain model-generated and experimental; this does not prove their individual optimality. Weekly AI interpretation and progression notes also require human review.

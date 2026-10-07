@@ -54,7 +54,7 @@ def validate_block(result, weeks, cards):
     guidance=[rag.clean_text(x,220) for x in guidance]
     ids=rag.citations(result.get('citations'),cards)
     return {'length':weeks,'sessions':validated,'weeks':guidance,
-        'rationale':rag.clean_text(result.get('rationale'),600),
+        'rationale':rag.plan_notice(),
         'sources':[c for c in cards if c['id'] in ids],'approved':False,'overrides':{},'range_order_normalized':normalized,
         'knowledge_sha256':rag.library()['sha256'],'model':rag.model_name()}
 

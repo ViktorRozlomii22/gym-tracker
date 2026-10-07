@@ -79,6 +79,17 @@ class Extensions(unittest.TestCase):
             ids=slot['properties']['exercise']['enum']
             self.assertTrue(ids)
             self.assertTrue(all(EXERCISES[key][1] in groups for key in ids))
+    def test_generated_scientific_claims_are_not_presented_as_facts(self):
+        candidate=plan_result(); candidate['rationale']='Високий RIR гарантує гіпертрофію.'
+        candidate['items'][0]['reason']='Високий RIR завжди кращий для м’язів.'
+        plan=rag.validate_plan(candidate,self.state,self.now,self.cards,False,False)
+        self.assertNotIn('гарантує',plan['rationale'])
+        self.assertNotIn('завжди',plan['items'][0]['basis'])
+        result={'insufficient':False,'answer':'Вигадана наукова відповідь.','limitations':'Вигадка.','citations':['trial2024']}
+        with patch.object(rag,'call_model',return_value=result):
+            answer=rag.answer('Чому не кожен підхід до відмови?',self.state,self.now)
+        self.assertNotIn('Вигадана',answer)
+        self.assertIn(next(c['summary_uk'] for c in self.cards if c['id']=='trial2024'),answer)
     def test_off_topic_questions_never_call_model_or_change_knowledge(self):
         before=rag.library()['sha256']
         state=copy.deepcopy(self.state)

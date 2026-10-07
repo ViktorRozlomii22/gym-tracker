@@ -29,7 +29,7 @@ These references are for experienced trainees, including someone with four years
 
 This is **retrieval-augmented generation (RAG)**. Model weights are not trained or fine-tuned. Personal history is supplied as context; the system does not secretly retrain itself. Source IDs are checked against the retrieved records and links are rendered from the trusted catalog. This checks citation identity, **not whether every generated claim is logically supported**. A small model can still misinterpret a study or produce a poor plan with real citations. The corpus contains differing evidence rather than treating a single study as settled truth.
 
-The model chooses the exercises, weights, reps, sets and RIR. The code does not automatically increase loads by fixed increments or apply a fixed branded workout. The original programs are reading references, not purported exact implementations. No source proves an exact kilogram prescription for an individual.
+The model chooses exercises, reps, sets, RIR and a relative load fraction. The app calculates kilograms from that fraction, your fresh strength reference, the conservative ceiling and your plate increment. This keeps arithmetic out of the small language model. There is no fixed progression increment or hardcoded branded workout. The original programs are reading references, not purported exact implementations. No source proves an exact kilogram prescription for an individual.
 
 ## Validation and health constraints
 

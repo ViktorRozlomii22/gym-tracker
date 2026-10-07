@@ -1,6 +1,7 @@
 import copy
 from datetime import datetime, timedelta
 import hashlib
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -21,12 +22,17 @@ from telegram.ext import ApplicationHandlerStop
 def block_result():
     return {'insufficient':False,'rationale':'Стабільні сесії з урахуванням відновлення.',
         'citations':['acsm2026'],'weeks':['Оцінюй запас і фактичні підходи.']*4,
-        'sessions':[{'title':f'Сесія {i}','items':[{'exercise':'squat','sets':[2,3],'reps':[5,8],'rir':[2,4]}]} for i in range(3)]}
+        'sessions':[{'title':f'Сесія {i}','items':[{'exercise':key,'sets':[2,3],'reps':[5,8],'rir':[2,4]} for key in ('squat','bench','row')]} for i in range(3)]}
 
 def plan_result(key='squat',kg=50,sets=2):
     return {'insufficient':False,'rationale':'Враховано дані.','uncertainty':'Реакція індивідуальна.',
         'citations':['acsm2026'],'items':[{'exercise':key,'sets':sets,'reps':5,'rir':3,'kg':kg,
         'reason':'Стартова оцінка, перевір на розминці.','citations':['acsm2026']}]}
+
+def balanced_plan():
+    result=plan_result()
+    result['items']=[plan_result(key)['items'][0] for key in ('squat','bench','row')]
+    return result
 
 class Extensions(unittest.TestCase):
     def setUp(self):
@@ -44,6 +50,23 @@ class Extensions(unittest.TestCase):
         t=db.create_training(1)
         db.add_exercise_to_training(t['training_id'],quick_parse(p.NAMES[key]+' 2x5 50 кг'))
         return t
+    def test_model_protocol_locks_disclosure_and_unknown_loads(self):
+        payload={'exercise_ids':{'squat':'Присідання','goblet':'Гоблет'},'estimated_strength_references':{'squat':100},'sources':self.cards}
+        reply=io.BytesIO(json.dumps({'message':{'content':'{}'}}).encode())
+        original=copy.deepcopy(rag.PLAN_SCHEMA)
+        with patch.object(rag.urllib.request,'urlopen',return_value=reply) as request:
+            rag.call_model('Тест.',payload,rag.PLAN_SCHEMA)
+        schema=json.loads(request.call_args.args[0].data)['format']
+        self.assertEqual(len(schema['properties']['uncertainty']['enum']),1)
+        branches=schema['properties']['items']['items']['oneOf']
+        unknown=next(x for x in branches if x['properties']['exercise']['enum']==['goblet'])
+        self.assertEqual(unknown['properties']['load_ratio']['type'],'null')
+        self.assertEqual(rag.PLAN_SCHEMA,original)
+    def test_language_and_whole_body_guards(self):
+        with self.assertRaises(ValueError): rag.clean_text('Full body training for an experienced athlete.')
+        result=block_result(); result['sessions'][0]['items'][2]['exercise']='goblet'
+        with self.assertRaises(ValueError): cycle.validate_block(result,4,self.cards)
+        self.assertEqual(rag.context_for(self.state,self.now)['profile']['training_experience_years'],4)
     def test_existing_profiles_migrate_without_losing_data(self):
         db.set_setting('coach:1',{'profile':{'досвід':4},'cursor':8})
         s=p.load(1); self.assertEqual(s['cursor'],8); self.assertIsNone(s['block']); self.assertEqual(s['exercise_feedback'],[])
@@ -56,18 +79,31 @@ class Extensions(unittest.TestCase):
         for change in ('id','range','count','source'):
             b=block_result()
             if change=='id': b['sessions'][0]['items'][0]['exercise']=[]
-            if change=='range': b['sessions'][0]['items'][0]['reps']=[8,5]
+            if change=='range': b['sessions'][0]['items'][0]['reps']=[21,5]
             if change=='count': b['weeks'].pop()
             if change=='source': b['citations']=['madeup']
             with self.assertRaises(ValueError): cycle.validate_block(b,4,self.cards)
+    def test_range_order_normalization_preserves_proposed_bounds_and_approval(self):
+        result=block_result(); result['sessions'][0]['items'][0]['reps']=[8,5]
+        block=cycle.validate_block(result,4,self.cards)
+        self.assertEqual(block['sessions'][0]['items'][0]['reps'],[5,8])
+        self.assertTrue(block['range_order_normalized']); self.assertFalse(block['approved'])
+        self.assertIn('Обидва значення ШІ збережено',cycle.render_block(block))
     def test_generated_session_obeys_approved_blueprint(self):
         self.block()
         with patch.object(rag,'call_model',return_value=plan_result('bench')):
             with self.assertRaises(ValueError): p.make_plan(self.state,self.now)
         self.assertIsNone(self.state['pending'])
-        with patch.object(rag,'call_model',return_value=plan_result()):
+        with patch.object(rag,'call_model',return_value=balanced_plan()):
             plan=p.make_plan(self.state,self.now)
         self.assertEqual(plan['block_week'],1)
+    def test_short_checkin_rejects_block_before_inference(self):
+        self.block()
+        tt.apply_checkin(self.state,{'sleep':8,'energy':4,'soreness':0,'minutes':15},self.now)
+        with patch.object(rag,'call_model') as inference:
+            with self.assertRaises(ValueError): p.make_plan(self.state,self.now)
+        inference.assert_not_called()
+        self.assertIsNone(self.state['pending'])
     def test_checkin_invalidates_plan_without_clearing_health_pause(self):
         self.state.update(health='sick',pending={'test':1},swap_draft={'test':1})
         tt.apply_checkin(self.state,{'sleep':8,'energy':5,'soreness':0,'minutes':60},self.now)
@@ -79,6 +115,21 @@ class Extensions(unittest.TestCase):
         with self.assertRaises(ValueError): rag.validate_plan(plan_result(sets=3),self.state,self.now,self.cards,False,False)
         self.assertEqual(rag.context_for(self.state,self.now)['checkin']['energy'],2)
         self.assertIsNone(rag.context_for(self.state,self.now+timedelta(days=1))['checkin'])
+    def test_ai_relative_load_uses_reference_arithmetic_and_plate_rounding(self):
+        result=plan_result(); item=result['items'][0]; item.pop('kg'); item['load_ratio']=.8
+        plan=rag.validate_plan(result,self.state,self.now,self.cards,False,False)
+        expected=p.round_down(self.state['prs']['squat']['e1rm']/(1+8/30)*.8,2.5)
+        self.assertEqual(plan['items'][0]['weight'],expected)
+        self.assertEqual(plan['items'][0]['load_ratio'],.8)
+        recovered=rag.validate_plan(result,self.state,self.now,self.cards,False,True)
+        self.assertEqual(recovered['items'][0]['weight'],p.round_down(expected/0.8*0.8*0.8,2.5))
+        for ratio in (1.01,float('nan'),True):
+            item['load_ratio']=ratio
+            with self.assertRaises(ValueError): rag.validate_plan(result,self.state,self.now,self.cards,False,False)
+        item['load_ratio']=.8; self.state['prs']={}
+        with self.assertRaises(ValueError): rag.validate_plan(result,self.state,self.now,self.cards,False,False)
+        item['load_ratio']=None
+        self.assertIsNone(rag.validate_plan(result,self.state,self.now,self.cards,False,False)['items'][0]['weight'])
     def test_feedback_requires_actual_and_pain_pauses(self):
         with self.assertRaises(ValueError): tt.add_feedback(self.state,1,'squat; 2; ні; 4',self.now)
         t=self.actual(); tt.add_feedback(self.state,1,'squat; 2; ні; 4',self.now)
@@ -93,7 +144,7 @@ class Extensions(unittest.TestCase):
             with self.assertRaises(ValueError): p.make_plan(self.state,self.now,True)
     def test_feedback_controls_bonus_eligibility_after_completion(self):
         self.actual()
-        with patch.object(rag,'call_model',return_value=plan_result()): plan=p.make_plan(self.state,self.now)
+        with patch.object(rag,'call_model',return_value=balanced_plan()): plan=p.make_plan(self.state,self.now)
         plan['approved']=True
         tt.add_feedback(self.state,1,'squat; 1; ні; 5',self.now)
         p.complete(self.state,1,4,self.now)
@@ -103,7 +154,7 @@ class Extensions(unittest.TestCase):
         self.assertEqual(self.state['completed'][0]['rir'],0)
     def test_swap_uses_own_reference_and_keeps_unrelated_items(self):
         b=self.block()
-        with patch.object(rag,'call_model',return_value=plan_result()): p.make_plan(self.state,self.now)
+        with patch.object(rag,'call_model',return_value=balanced_plan()): p.make_plan(self.state,self.now)
         original=copy.deepcopy(self.state['pending'])
         with patch.object(rag,'call_model',return_value=plan_result('legpress',50)):
             with self.assertRaises(ValueError): cycle.swap_proposal(self.state,'squat','зайнято',self.now)

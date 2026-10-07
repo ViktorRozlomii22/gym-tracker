@@ -27,7 +27,8 @@ async def checkin_input(update,context):
     text=update.message.text.strip()
     if text=='❌ Скасувати перевірку':
         context.user_data.pop('checkin_wizard',None)
-        await update.message.reply_text('Перевірку скасовано. /plan — план.')
+        await update.message.reply_text('Перевірку скасовано. /plan — план.',
+            reply_markup=ReplyKeyboardMarkup([['📋 Мій план','✅ Перед тренуванням']],resize_keyboard=True))
         return True
     key=CHECK_STEPS[wizard['step']][0]
     try:

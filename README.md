@@ -55,10 +55,10 @@ Normal logging, history, charts, measurements and reminders work without AI.
 For free-text extraction, double-click **`SETUP_AI.cmd`** once. If Ollama is missing, it opens the [official Windows download](https://ollama.com/download/windows). Install Ollama and run `SETUP_AI.cmd` again; it offers to download the model. Subsequent bot starts automatically start the local AI service. The equivalent manual model download is:
 
 ```powershell
-ollama pull qwen3:1.7b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 ```
 
-The model download is about 1.4 GB; runtime memory use is higher. A 16 GB PC is a reasonable starting point, but CPU speed determines latency. The bot sends text only to `127.0.0.1:11434`, uses a short context, and unloads the model after each request. There is no cloud fallback. The model does **not** manage the database: every proposed entry requires `/confirm`. Check its numbers before confirming. AI is not included in the app ZIP and is not required for setup.
+The model download is about 2.5 GB; runtime memory use is higher. A 16 GB PC is a reasonable starting point, but CPU speed determines latency. The bot sends text only to `127.0.0.1:11434`, uses a short context, and unloads the model after each request. There is no cloud fallback. The model does **not** manage the database: every proposed entry requires `/confirm`. Check its numbers before confirming. AI is not included in the app ZIP and is not required for setup.
 
 ## Your data
 

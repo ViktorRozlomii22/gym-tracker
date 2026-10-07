@@ -33,7 +33,11 @@ def run_suite(destination=None, selected=None):
             cases.append({'case':name,'status':'accepted_by_app_guards','seconds':round(time.monotonic()-started,2),'output':output})
         except (ValueError,RuntimeError) as error:
             cases.append({'case':name,'status':'rejected_or_failed','seconds':round(time.monotonic()-started,2),'error':str(error)})
-        print('  '+cases[-1]['status'],flush=True)
+        print('  '+cases[-1]['status']+(' - '+cases[-1]['error'] if 'error' in cases[-1] else ''),flush=True)
+        folder=Path(destination) if destination else DATA_DIR/'evaluation'
+        folder.mkdir(parents=True,exist_ok=True)
+        progress={'created':now.isoformat(),'model':rag.model_name(),'mocked':False,'cases':cases,'incomplete':True}
+        (folder/'evaluation-in-progress.json').write_text(json.dumps(progress,ensure_ascii=False,indent=2),encoding='utf-8')
     record('experienced_session',lambda:rag.generate(copy.deepcopy(base),now,False,False))
     no_pr=copy.deepcopy(base); no_pr['prs']={}
     def missing_reference():
@@ -44,7 +48,16 @@ def run_suite(destination=None, selected=None):
     record('no_strength_reference',missing_reference)
     recovered=copy.deepcopy(base); recovered['return_left']=3
     record('recovery_session',lambda:rag.generate(recovered,now,False,True))
-    record('four_week_block',lambda:propose_block(copy.deepcopy(base),4,now))
+    def block_workflow():
+        state=copy.deepcopy(base)
+        block=propose_block(state,4,now)
+        intermediate=Path(destination) if destination else DATA_DIR/'evaluation'
+        intermediate.mkdir(parents=True,exist_ok=True)
+        (intermediate/'last-generated-block.json').write_text(json.dumps(block,ensure_ascii=False,indent=2),encoding='utf-8')
+        block.update(approved=True,start_cursor=0); state['block']=block
+        first=rag.generate(state,now,False,False)
+        return {'block':block,'first_session':first}
+    record('four_week_block',block_workflow)
     swap=copy.deepcopy(base)
     source=next(c for c in rag.library()['cards'] if c['id']=='acsm2026')
     swap['pending']={'day':now.date().isoformat(),'program':'fullbody','cursor':0,'bonus':False,'recovery':False,
@@ -61,6 +74,7 @@ def run_suite(destination=None, selected=None):
     folder.mkdir(parents=True,exist_ok=True)
     path=folder/f'qwen-{now.strftime("%Y%m%d-%H%M%S")}.json'
     path.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+    (folder/'evaluation-in-progress.json').unlink(missing_ok=True)
     return path,report
 
 def main():

@@ -9,7 +9,7 @@
 | Telegram reports a conflict | Stop the other copy using the same token. Only one polling process can run per token. |
 | A graph is empty | Use the exact recorded exercise/measurement name and a period containing entries. |
 | No reminders arrive | Enable `/remind 10`; keep PC awake, internet connected and app running after 18:00. |
-| Local AI is unavailable | Start Ollama and run `ollama pull qwen3:1.7b`. Normal bot features do not require it. |
+| Local AI is unavailable | Start Ollama and run `ollama pull qwen3:4b-instruct-2507-q4_K_M`. Normal bot features do not require it. |
 | Windows displays an unknown-publisher notice | The app is not code-signed. Verify its source and release checksum; alternatively build it yourself. Do not disable antivirus protections. |
 
 ## Change or revoke a token

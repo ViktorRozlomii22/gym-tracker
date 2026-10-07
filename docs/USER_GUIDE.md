@@ -46,7 +46,7 @@ For a full backup, stop the app and copy `data/nextset.sqlite3`. Copying the ent
 
 ## Optional AI
 
-Install Ollama and `qwen3:1.7b` separately. Send one exercise per `/ai` request. Review the proposed Ukrainian name, weight and reps; `/confirm` saves it and `/cancel` discards it. Output is validated, but valid-looking values can still be wrong. The model cannot run commands or access the database directly. This is text extraction, not an autonomous fitness coach.
+Install Ollama and `qwen3:4b-instruct-2507-q4_K_M` separately. Send one exercise per `/ai` request. Review the proposed Ukrainian name, weight and reps; `/confirm` saves it and `/cancel` discards it. Output is validated, but valid-looking values can still be wrong. The model cannot run commands or access the database directly. This is text extraction, not an autonomous fitness coach.
 
 ## Starting with Windows
 

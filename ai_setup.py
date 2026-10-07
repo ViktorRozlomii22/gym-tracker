@@ -9,7 +9,7 @@ import urllib.request
 import webbrowser
 from paths import DATA_DIR
 
-MODEL = 'qwen3:1.7b'
+MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
 
 def ollama_executable():
     found=shutil.which('ollama')
@@ -41,7 +41,7 @@ def ensure_server(executable):
 
 def setup():
     from dotenv import set_key
-    print('\nOPTIONAL LOCAL AI\nModel: Qwen3 1.7B (about 1.4 GB download). No cloud service.\n')
+    print('\nOPTIONAL LOCAL AI\nModel: Qwen3 4B Instruct (about 2.5 GB download). No cloud service.\n')
     executable=ollama_executable()
     if not executable:
         print('Install Ollama from the official Windows installer, then run SETUP_AI.cmd again.')

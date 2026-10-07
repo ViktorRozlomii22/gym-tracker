@@ -43,6 +43,6 @@ The report preserves model ID, corpus hash, durations and accepted/rejected outp
 
 ## Transparent app guards
 
-The catalog describes exercise identities and movements; it does not prescribe workouts. Qwen chooses blocks and workloads. Deterministic code verifies structure and controls saving. Fresh PR/actual references, conservative weight ceilings, recovery limits and explicit approvals remain as described in [PROGRAMS.md](PROGRAMS.md).
+The catalog describes exercise identities and movements; it does not prescribe workouts. Qwen chooses blocks, exercises, sets, reps, RIR and a relative load fraction (0.25–1.0). The app performs the arithmetic: `reference / (1 + (reps + RIR) / 30) × fraction`, then applies any conservative fatigue factor and rounds down to your plate increment. Without an exercise-specific fresh reference, kilograms remain unspecified. This numerical tool prevents language-model arithmetic errors; it is not an automatic fixed workout or optimal-load guarantee. Code verifies structure and controls saving. Recovery limits and explicit approvals remain as described in [PROGRAMS.md](PROGRAMS.md).
 
 A same-day check-in with energy ≤2, soreness ≥4 or sleep <5 hours applies the existing conservative 0.8 load-ceiling factor. Available time caps work sets using an approximate `floor((minutes - 10) / 2)` budget. These are transparent product safeguards, not evidence of optimal recovery or precise workout duration. An incompatible block/time combination is rejected for review rather than silently reshaped.

@@ -67,15 +67,9 @@ def call_model(system, payload, schema):
     constrain(schema)
     if 'sessions' in schema.get('properties',{}):
         from exercise_catalog import EXERCISES
-        array=schema['properties']['sessions']['items']['properties']['items']
-        slot=array['items']
-        def movement_slot(groups):
-            value=copy.deepcopy(slot)
-            value['properties']['exercise']['enum']=[key for key in exercises if EXERCISES[key][1] in groups]
-            return value
-        array.update(minItems=3,prefixItems=[movement_slot({'squat','hinge'}),
-            movement_slot({'horizontal_push','vertical_push'}),movement_slot({'horizontal_pull','vertical_pull'})])
-        array['items']=movement_slot({'curl','triceps','legcurl','lateral','calf'})
+        properties=schema['properties']['sessions']['items']['properties']
+        for field,groups in [('lower',{'squat','hinge'}),('push',{'horizontal_push','vertical_push'}),('pull',{'horizontal_pull','vertical_pull'})]:
+            properties[field]['properties']['exercise']['enum']=[key for key in exercises if EXERCISES[key][1] in groups]
     if 'weeks' in schema.get('properties',{}) and type(payload.get('weeks')) is int:
         schema['properties']['weeks'].update(minItems=payload['weeks'],maxItems=payload['weeks'])
     if payload.get('choices') and 'items' in schema.get('properties',{}):

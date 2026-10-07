@@ -72,7 +72,8 @@ class Extensions(unittest.TestCase):
         with patch.object(rag.urllib.request,'urlopen',return_value=reply) as request:
             rag.call_model('Тест.',payload,cycle.BLOCK_SCHEMA)
         schema=json.loads(request.call_args.args[0].data)['format']
-        slots=schema['properties']['sessions']['items']['properties']['items']['prefixItems']
+        properties=schema['properties']['sessions']['items']['properties']
+        slots=[properties[key] for key in ('lower','push','pull')]
         from exercise_catalog import EXERCISES
         expected=({'squat','hinge'},{'horizontal_push','vertical_push'},{'horizontal_pull','vertical_pull'})
         for slot,groups in zip(slots,expected):
@@ -90,6 +91,15 @@ class Extensions(unittest.TestCase):
             answer=rag.answer('Чому не кожен підхід до відмови?',self.state,self.now)
         self.assertNotIn('Вигадана',answer)
         self.assertIn(next(c['summary_uk'] for c in self.cards if c['id']=='trial2024'),answer)
+    def test_block_identity_maps_preserve_ai_selection(self):
+        candidate=block_result()
+        for session in candidate['sessions']:
+            session['lower'],session['push'],session['pull']=session.pop('items')
+            session['accessories']={'curl':{'sets':[2,3],'reps':[8,12],'rir':[2,3]}}
+        block=cycle.validate_block(candidate,4,self.cards)
+        self.assertEqual([x['exercise'] for x in block['sessions'][0]['items']],['squat','bench','row','curl'])
+        candidate['sessions'][0]['accessories']['unknown']={'sets':[2,3],'reps':[8,12],'rir':[2,3]}
+        with self.assertRaises(ValueError): cycle.validate_block(candidate,4,self.cards)
     def test_off_topic_questions_never_call_model_or_change_knowledge(self):
         before=rag.library()['sha256']
         state=copy.deepcopy(self.state)

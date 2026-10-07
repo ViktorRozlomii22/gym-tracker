@@ -23,3 +23,5 @@ Whole-body block JSON requires lower-body, push and pull slots, followed by opti
 ## Grounded display
 
 Real outputs still included unsupported interpretations such as treating high RIR as a hypertrophy advantage. The app therefore replaces generated plan rationales and exercise explanations with truthful product notices and reference/calibration facts. Conceptual Q&A displays the selected reviewed source summaries and their limitations directly, rather than trusting a small model to paraphrase scientific conclusions. Numeric workout choices remain model-generated and experimental; this does not prove their individual optimality. Weekly AI interpretation and progression notes also require human review.
+
+Accessory selection now uses a map keyed by exercise ID rather than an array. This prevents the repeated-ID failure observed in a real test. The lower-body, push and pull objects have disjoint ID sets; optional accessories remain model choices (maximum three). Existing approved blocks keep their canonical item-list representation.

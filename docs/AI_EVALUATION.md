@@ -25,3 +25,16 @@ Whole-body block JSON requires lower-body, push and pull slots, followed by opti
 Real outputs still included unsupported interpretations such as treating high RIR as a hypertrophy advantage. The app therefore replaces generated plan rationales and exercise explanations with truthful product notices and reference/calibration facts. Conceptual Q&A displays the selected reviewed source summaries and their limitations directly, rather than trusting a small model to paraphrase scientific conclusions. Numeric workout choices remain model-generated and experimental; this does not prove their individual optimality. Weekly AI interpretation and progression notes also require human review.
 
 Accessory selection now uses a map keyed by exercise ID rather than an array. This prevents the repeated-ID failure observed in a real test. The lower-body, push and pull objects have disjoint ID sets; optional accessories remain model choices (maximum three). Existing approved blocks keep their canonical item-list representation.
+
+## Recorded runs on 7 October 2026
+
+| Configuration | Cases accepted by app guards | What it showed |
+| --- | --- | --- |
+| 4B Instruct, initial English evidence | 5/6 | Refused a calibration-only substitution; prose also needed review. |
+| Ukrainian evidence, array blocks | 5/6 | The block was rejected as unbalanced. |
+| Required movement slots, array accessories | 5/6 | The block was rejected for a repeated exercise identity. |
+| Unique accessory map and grounded display, targeted retest | 2/2 | Full four-week block plus first session, and extractive evidence Q&A passed. |
+
+The final targeted report is [qwen-20261007-094638.json](evaluation/qwen-20261007-094638.json). The preceding six-case report is [qwen-20261007-093115.json](evaluation/qwen-20261007-093115.json). These are distinct runs, not a claimed 6/6 final full-suite score. Remaining numeric choices and weekly AI advice are experimental and require review.
+
+During CPU evaluation, Ollama reported 3,884,460,276 bytes (about 3.62 GiB) of model allocation at an 8192-token context and zero GPU allocation. This excludes other process/system memory. The download is about 2.5 GB. On this CPU, generation was roughly 6–8 tokens/second; large blocks take several minutes. The isolated evaluation server was stopped after each run. No live Telegram bot was started.

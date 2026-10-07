@@ -1,0 +1,402 @@
+{
+  "created": "2026-10-07T09:46:38.368306",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "knowledge_sha256": "e0878128d161494c3b121b31168af0c0b6bde2c30d8d69b01438801cd260bc1f",
+  "synthetic_data_only": true,
+  "mocked": false,
+  "cases": [
+    {
+      "case": "four_week_block",
+      "status": "accepted_by_app_guards",
+      "seconds": 339.84,
+      "output": {
+        "block": {
+          "length": 4,
+          "sessions": [
+            {
+              "title": "Сесія 1",
+              "items": [
+                {
+                  "exercise": "squat",
+                  "sets": [
+                    4,
+                    5
+                  ],
+                  "reps": [
+                    8,
+                    12
+                  ],
+                  "rir": [
+                    4,
+                    5
+                  ]
+                },
+                {
+                  "exercise": "bench",
+                  "sets": [
+                    4,
+                    5
+                  ],
+                  "reps": [
+                    8,
+                    12
+                  ],
+                  "rir": [
+                    4,
+                    5
+                  ]
+                },
+                {
+                  "exercise": "row",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                },
+                {
+                  "exercise": "dbtriceps",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Сесія 2",
+              "items": [
+                {
+                  "exercise": "deadlift",
+                  "sets": [
+                    4,
+                    5
+                  ],
+                  "reps": [
+                    6,
+                    8
+                  ],
+                  "rir": [
+                    4,
+                    5
+                  ]
+                },
+                {
+                  "exercise": "press",
+                  "sets": [
+                    4,
+                    5
+                  ],
+                  "reps": [
+                    8,
+                    12
+                  ],
+                  "rir": [
+                    4,
+                    5
+                  ]
+                },
+                {
+                  "exercise": "pulldown",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                },
+                {
+                  "exercise": "cablecurl",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                }
+              ]
+            },
+            {
+              "title": "Сесія 3",
+              "items": [
+                {
+                  "exercise": "legpress",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                },
+                {
+                  "exercise": "shoulderpress",
+                  "sets": [
+                    4,
+                    5
+                  ],
+                  "reps": [
+                    8,
+                    12
+                  ],
+                  "rir": [
+                    4,
+                    5
+                  ]
+                },
+                {
+                  "exercise": "cablerow",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                },
+                {
+                  "exercise": "dbtriceps",
+                  "sets": [
+                    3,
+                    4
+                  ],
+                  "reps": [
+                    10,
+                    15
+                  ],
+                  "rir": [
+                    3,
+                    4
+                  ]
+                }
+              ]
+            }
+          ],
+          "weeks": [
+            "Якщо виконано всі повторення на RIR 5 — збільшити вагу на 2.5 кг у наступній сесії.",
+            "Якщо виконано всі повторення на RIR 5 — збільшити вагу на 2.5 кг у наступній сесії.",
+            "Якщо виконано всі повторення на RIR 5 — збільшити вагу на 2.5 кг у наступній сесії.",
+            "Зменшити кількість підходів на 1 у всіх вправах; виконувати з RIR 3–4. Вага не змінюється."
+          ],
+          "rationale": "Індивідуальна пропозиція ШІ. Джерела описують загальні принципи та не доводять оптимальність цього точного плану.",
+          "sources": [
+            {
+              "id": "auto2022",
+              "title": "Hickmott et al.: Load and Volume Autoregulation (2022)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/35038063/",
+              "kind": "systematic review and meta-analysis",
+              "population": "Resistance-trained individuals; 15 studies",
+              "tags": "autoregulation RIR RPE fatigue progression авторегуляція втома прогрес запас",
+              "summary": "Autoregulated and standardized load prescription produced similar strength improvements. Velocity-loss comparisons suggested trade-offs between fatigue, strength and hypertrophy. Effort feedback can support individual adjustment, but autoregulation is not proven universally superior.",
+              "limitations": "Small evidence base for some comparisons. Velocity measurements are not interchangeable with subjective RIR. Does not validate an AI coach or a fixed percentage reduction after illness.",
+              "summary_uk": "У тренованих учасників авторегуляція та стандартне призначення навантажень дали подібні прирости сили. Порівняння втрати швидкості показали компроміси між втомою, силою й гіпертрофією. Дані про фактичне зусилля допомагають індивідуально коригувати тренування, але універсальної переваги авторегуляції не доведено.",
+              "limitations_uk": "Для частини порівнянь доказів мало. Виміряна швидкість руху та суб’єктивний запас повторень RIR не взаємозамінні. Огляд не перевіряв ШІ-тренера чи фіксоване зниження ваги після хвороби."
+            },
+            {
+              "id": "acsm2026",
+              "title": "ACSM: Resistance Training Prescription (2026)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/",
+              "kind": "overview of reviews / position stand",
+              "population": "Healthy adults; mixed training experience",
+              "tags": "strength hypertrophy frequency volume сила м’язи гіпертрофія обсяг частота план",
+              "summary": "An overview of 137 reviews found that progressive resistance training improves strength and muscle size. Heavier loads favored maximal strength. Higher weekly volume favored hypertrophy; volume-equated frequency comparisons did not establish a universal hypertrophy advantage. Failure training and periodization were not consistently superior. Individual prescription still depends on goals and tolerance.",
+              "limitations": "Group averages, heterogeneous studies; not an individualized kilogram prescription or evidence that any branded routine is best. A weekly volume association is not a mandatory minimum for every individual.",
+              "summary_uk": "Огляд 137 оглядів показав: прогресивні силові тренування покращують силу та розмір м’язів. Більші навантаження сприяли максимальній силі, більший тижневий обсяг — гіпертрофії. За однакового обсягу частота не давала універсальної переваги для гіпертрофії. Тренування до відмови та періодизація не були послідовно кращими. Вибір навантажень залежить від мети й переносимості.",
+              "limitations_uk": "Це середні результати різнорідних досліджень, а не персональні кілограми чи доказ найкращої авторської програми. Зв’язок обсягу з ростом м’язів не означає обов’язкового мінімуму для кожної людини."
+            },
+            {
+              "id": "rir2024",
+              "title": "Robinson et al.: Proximity to Failure Meta-Regressions (2024)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+              "kind": "meta-regression",
+              "population": "Resistance-training studies with estimated repetitions in reserve",
+              "tags": "failure RIR strength hypertrophy відмова запас повторення м’язи сила",
+              "summary": "The relationship between proximity to failure and adaptation differed for strength and hypertrophy. Hypertrophy was more meaningfully related to estimated RIR than strength was.",
+              "limitations": "RIR was estimated from study descriptions. Associations do not establish an exact optimal RIR for this user or require every set to failure.",
+              "summary_uk": "Зв’язок близькості до відмови з адаптацією відрізнявся для сили й гіпертрофії. Гіпертрофія була тісніше пов’язана з оціненим запасом повторень RIR, ніж сила.",
+              "limitations_uk": "RIR оцінювали за описами досліджень. Ці зв’язки не визначають точний оптимальний RIR для користувача та не вимагають виконувати кожен підхід до відмови."
+            },
+            {
+              "id": "volume2019",
+              "title": "Schoenfeld et al.: Training Volume in Trained Men (2019)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/30153194/",
+              "kind": "randomized controlled trial",
+              "population": "34 resistance-trained men; one, three or five sets per exercise",
+              "tags": "volume hypertrophy strength trained обсяг підходи досвід м’язи сила",
+              "summary": "Strength improved without significant between-group differences. Some measured hypertrophy outcomes favored greater training volume.",
+              "limitations": "Small male sample and limited study duration; more volume is not always better and the study does not prescribe a personal recoverable volume.",
+              "summary_uk": "У дослідженні 34 тренованих чоловіків порівнювали один, три та п’ять підходів на вправу. Сила покращилась без значущих відмінностей між групами; частина вимірів гіпертрофії була кращою за більшого обсягу.",
+              "limitations_uk": "Невелика чоловіча вибірка та обмежена тривалість. Більший обсяг не завжди кращий; дослідження не визначає персональний обсяг, від якого людина здатна відновитися."
+            }
+          ],
+          "approved": true,
+          "overrides": {},
+          "range_order_normalized": false,
+          "knowledge_sha256": "e0878128d161494c3b121b31168af0c0b6bde2c30d8d69b01438801cd260bc1f",
+          "model": "qwen3:4b-instruct-2507-q4_K_M",
+          "start_cursor": 0,
+          "created": "2026-10-07T09:46:38.368306",
+          "program": "fullbody"
+        },
+        "first_session": {
+          "items": [
+            {
+              "key": "squat",
+              "sets": 5,
+              "reps": 12,
+              "rir": 5,
+              "load_ratio": 0.75,
+              "weight": 55.0,
+              "basis": "Стартова оцінка за силовою опорою; перевір фактичний RIR.",
+              "citations": [
+                "acsm2026"
+              ]
+            },
+            {
+              "key": "bench",
+              "sets": 5,
+              "reps": 12,
+              "rir": 5,
+              "load_ratio": 0.75,
+              "weight": 42.5,
+              "basis": "Стартова оцінка за силовою опорою; перевір фактичний RIR.",
+              "citations": [
+                "acsm2026",
+                "rir2024"
+              ]
+            },
+            {
+              "key": "row",
+              "sets": 4,
+              "reps": 15,
+              "rir": 4,
+              "load_ratio": 0.5,
+              "weight": 20.0,
+              "basis": "Стартова оцінка за силовою опорою; перевір фактичний RIR.",
+              "citations": [
+                "acsm2026",
+                "volume2019"
+              ]
+            },
+            {
+              "key": "dbtriceps",
+              "sets": 4,
+              "reps": 15,
+              "rir": 3,
+              "load_ratio": null,
+              "weight": null,
+              "basis": "Немає визначеної ваги; калібруй її на розминці за цільовим RIR.",
+              "citations": [
+                "auto2022"
+              ]
+            }
+          ],
+          "rationale": "Індивідуальна пропозиція ШІ. Джерела описують загальні принципи та не доводять оптимальність цього точного плану.",
+          "uncertainty": "Це стартова оцінка; перевір вагу на розминці та коригуй за фактичним RIR. Джерела не визначають твої точні кілограми.",
+          "sources": [
+            {
+              "id": "auto2022",
+              "title": "Hickmott et al.: Load and Volume Autoregulation (2022)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/35038063/",
+              "kind": "systematic review and meta-analysis",
+              "population": "Resistance-trained individuals; 15 studies",
+              "tags": "autoregulation RIR RPE fatigue progression авторегуляція втома прогрес запас",
+              "summary": "Autoregulated and standardized load prescription produced similar strength improvements. Velocity-loss comparisons suggested trade-offs between fatigue, strength and hypertrophy. Effort feedback can support individual adjustment, but autoregulation is not proven universally superior.",
+              "limitations": "Small evidence base for some comparisons. Velocity measurements are not interchangeable with subjective RIR. Does not validate an AI coach or a fixed percentage reduction after illness.",
+              "summary_uk": "У тренованих учасників авторегуляція та стандартне призначення навантажень дали подібні прирости сили. Порівняння втрати швидкості показали компроміси між втомою, силою й гіпертрофією. Дані про фактичне зусилля допомагають індивідуально коригувати тренування, але універсальної переваги авторегуляції не доведено.",
+              "limitations_uk": "Для частини порівнянь доказів мало. Виміряна швидкість руху та суб’єктивний запас повторень RIR не взаємозамінні. Огляд не перевіряв ШІ-тренера чи фіксоване зниження ваги після хвороби."
+            },
+            {
+              "id": "acsm2026",
+              "title": "ACSM: Resistance Training Prescription (2026)",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/",
+              "kind": "overview of reviews / position stand",
+              "population": "Healthy adults; mixed training experience",
+              "tags": "strength hypertrophy frequency volume сила м’язи гіпертрофія обсяг частота план",
+              "summary": "An overview of 137 reviews found that progressive resistance training improves strength and muscle size. Heavier loads favored maximal strength. Higher weekly volume favored hypertrophy; volume-equated frequency comparisons did not establish a universal hypertrophy advantage. Failure training and periodization were not consistently superior. Individual prescription still depends on goals and tolerance.",
+              "limitations": "Group averages, heterogeneous studies; not an individualized kilogram prescription or evidence that any branded routine is best. A weekly volume association is not a mandatory minimum for every individual.",
+              "summary_uk": "Огляд 137 оглядів показав: прогресивні силові тренування покращують силу та розмір м’язів. Більші навантаження сприяли максимальній силі, більший тижневий обсяг — гіпертрофії. За однакового обсягу частота не давала універсальної переваги для гіпертрофії. Тренування до відмови та періодизація не були послідовно кращими. Вибір навантажень залежить від мети й переносимості.",
+              "limitations_uk": "Це середні результати різнорідних досліджень, а не персональні кілограми чи доказ найкращої авторської програми. Зв’язок обсягу з ростом м’язів не означає обов’язкового мінімуму для кожної людини."
+            },
+            {
+              "id": "rir2024",
+              "title": "Robinson et al.: Proximity to Failure Meta-Regressions (2024)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+              "kind": "meta-regression",
+              "population": "Resistance-training studies with estimated repetitions in reserve",
+              "tags": "failure RIR strength hypertrophy відмова запас повторення м’язи сила",
+              "summary": "The relationship between proximity to failure and adaptation differed for strength and hypertrophy. Hypertrophy was more meaningfully related to estimated RIR than strength was.",
+              "limitations": "RIR was estimated from study descriptions. Associations do not establish an exact optimal RIR for this user or require every set to failure.",
+              "summary_uk": "Зв’язок близькості до відмови з адаптацією відрізнявся для сили й гіпертрофії. Гіпертрофія була тісніше пов’язана з оціненим запасом повторень RIR, ніж сила.",
+              "limitations_uk": "RIR оцінювали за описами досліджень. Ці зв’язки не визначають точний оптимальний RIR для користувача та не вимагають виконувати кожен підхід до відмови."
+            },
+            {
+              "id": "volume2019",
+              "title": "Schoenfeld et al.: Training Volume in Trained Men (2019)",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/30153194/",
+              "kind": "randomized controlled trial",
+              "population": "34 resistance-trained men; one, three or five sets per exercise",
+              "tags": "volume hypertrophy strength trained обсяг підходи досвід м’язи сила",
+              "summary": "Strength improved without significant between-group differences. Some measured hypertrophy outcomes favored greater training volume.",
+              "limitations": "Small male sample and limited study duration; more volume is not always better and the study does not prescribe a personal recoverable volume.",
+              "summary_uk": "У дослідженні 34 тренованих чоловіків порівнювали один, три та п’ять підходів на вправу. Сила покращилась без значущих відмінностей між групами; частина вимірів гіпертрофії була кращою за більшого обсягу.",
+              "limitations_uk": "Невелика чоловіча вибірка та обмежена тривалість. Більший обсяг не завжди кращий; дослідження не визначає персональний обсяг, від якого людина здатна відновитися."
+            }
+          ],
+          "knowledge_version": "2026-10-07.1",
+          "knowledge_sha256": "e0878128d161494c3b121b31168af0c0b6bde2c30d8d69b01438801cd260bc1f",
+          "model": "qwen3:4b-instruct-2507-q4_K_M",
+          "approved": false,
+          "block_week": 1
+        }
+      }
+    },
+    {
+      "case": "evidence_question",
+      "status": "accepted_by_app_guards",
+      "seconds": 60.47,
+      "output": "Відомості з перевіреної локальної бази (узагальнення досліджень, не персональний припис):\n\n[rir2024] Robinson et al.: Proximity to Failure Meta-Regressions (2024)\nЗв’язок близькості до відмови з адаптацією відрізнявся для сили й гіпертрофії. Гіпертрофія була тісніше пов’язана з оціненим запасом повторень RIR, ніж сила.\nМежі висновку: RIR оцінювали за описами досліджень. Ці зв’язки не визначають точний оптимальний RIR для користувача та не вимагають виконувати кожен підхід до відмови.\nhttps://pubmed.ncbi.nlm.nih.gov/38970765/\n\n[trial2024] Refalo et al.: Failure versus Repetitions in Reserve (2024)\nУ восьмитижневому порівнянні тренованих учасників завершення підходів близько до відмови, приблизно з 1–2 повтореннями в запасі, дало подібну гіпертрофію квадрицепса до виконання до моментальної відмови.\nМежі висновку: Короткий період та результати для конкретного м’яза. Не можна автоматично переносити висновки на всі вправи, людей і довгострокові результати.\nhttps://pubmed.ncbi.nlm.nih.gov/38393985/\n\n[acsm2026] ACSM: Resistance Training Prescription (2026)\nОгляд 137 оглядів показав: прогресивні силові тренування покращують силу та розмір м’язів. Більші навантаження сприяли максимальній силі, більший тижневий обсяг — гіпертрофії. За однакового обсягу частота не давала універсальної переваги для гіпертрофії. Тренування до відмови та періодизація не були послідовно кращими. Вибір навантажень залежить від мети й переносимості.\nМежі висновку: Це середні результати різнорідних досліджень, а не персональні кілограми чи доказ найкращої авторської програми. Зв’язок обсягу з ростом м’язів не означає обов’язкового мінімуму для кожної людини.\nhttps://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/"
+    }
+  ],
+  "accepted": 2,
+  "total": 2,
+  "interpretation": "App guards check structure, references and conservative load limits. Acceptance does not prove scientific accuracy, Ukrainian fluency, citation entailment or suitability for a person. Review every output manually.",
+  "manual_review_required": true
+}

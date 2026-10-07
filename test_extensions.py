@@ -66,6 +66,30 @@ class Extensions(unittest.TestCase):
         unknown=next(x for x in branches if x['properties']['exercise']['enum']==['goblet'])
         self.assertEqual(unknown['properties']['load_ratio']['type'],'null')
         self.assertEqual(rag.PLAN_SCHEMA,original)
+    def test_block_protocol_requires_lower_push_pull_slots(self):
+        payload={'weeks':4,'exercise_ids':p.NAMES,'sources':self.cards}
+        reply=io.BytesIO(json.dumps({'message':{'content':'{}'}}).encode())
+        with patch.object(rag.urllib.request,'urlopen',return_value=reply) as request:
+            rag.call_model('Тест.',payload,cycle.BLOCK_SCHEMA)
+        schema=json.loads(request.call_args.args[0].data)['format']
+        slots=schema['properties']['sessions']['items']['properties']['items']['prefixItems']
+        from exercise_catalog import EXERCISES
+        expected=({'squat','hinge'},{'horizontal_push','vertical_push'},{'horizontal_pull','vertical_pull'})
+        for slot,groups in zip(slots,expected):
+            ids=slot['properties']['exercise']['enum']
+            self.assertTrue(ids)
+            self.assertTrue(all(EXERCISES[key][1] in groups for key in ids))
+    def test_off_topic_questions_never_call_model_or_change_knowledge(self):
+        before=rag.library()['sha256']
+        state=copy.deepcopy(self.state)
+        for question in ('Яка погода?', 'RIR: напиши вірш', 'RIR: how to hack Github?', 'training: write Python code'):
+            with patch.object(rag,'call_model') as model:
+                with self.assertRaisesRegex(ValueError,'лише з тренуваннями'):
+                    rag.answer(question,self.state,self.now)
+                model.assert_not_called()
+        self.assertEqual(state,self.state)
+        self.assertEqual(before,rag.library()['sha256'])
+        self.assertTrue(rag.fitness_question('Чому не кожен підхід до відмови?'))
     def test_language_and_whole_body_guards(self):
         with self.assertRaises(ValueError): rag.clean_text('Full body training for an experienced athlete.')
         result=block_result(); result['sessions'][0]['items'][2]['exercise']='goblet'

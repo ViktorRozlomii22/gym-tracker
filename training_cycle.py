@@ -150,7 +150,7 @@ def swap_proposal(state, old, reason, now):
              'estimated_strength_references':limits,'sources':cards,'light':light,
              'validation_limits':{'max_sets_per_exercise':2 if light else 5,'reps':[3,20],'rir':[3 if light else 1,5]}}
     result=rag.call_model('Replace ONE exercise with one of the supplied same-movement choices. Ukrainian prose, JSON. '
-        'Do not transfer kilograms across equipment or exercise variants. load_ratio must be null without a reference for the chosen ID. '
+        'If a same-movement choice exists but lacks a PR, a valid proposal is still possible: insufficient=false, load_ratio=null, with warm-up calibration explained. Missing PR alone is not grounds to refuse a substitution. Do not transfer kilograms across equipment or exercise variants. load_ratio must be null without a reference for the chosen ID. '
         'Respect the original set/repetition structure and effort; light sessions <=2 sets, RIR>=3. '
         'Choose load_ratio 0.25–1.0 of the conservative ceiling; the app computes kg and fatigue reductions, not you. Never prescribe absolute kg in prose. '
         'Return one-item plan schema with real supplied citation IDs. State that a substitution is a practical proposal, not proven equivalence. '

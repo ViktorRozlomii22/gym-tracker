@@ -1,20 +1,90 @@
 {
-  "version": "2026-10-06.1",
+  "version": "2026-10-07.1",
   "reviewed": "2026-10-06",
   "cards": [
-    {"id":"acsm2026","title":"ACSM: Resistance Training Prescription (2026)","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/","kind":"overview of reviews / position stand","population":"Healthy adults; mixed training experience","tags":"strength hypertrophy frequency volume сила м’язи гіпертрофія обсяг частота план",
-     "summary":"An overview of 137 reviews found that progressive resistance training improves strength and muscle size. Heavier loads favored maximal strength. Higher weekly volume favored hypertrophy; volume-equated frequency comparisons did not establish a universal hypertrophy advantage. Failure training and periodization were not consistently superior. Individual prescription still depends on goals and tolerance.","limitations":"Group averages, heterogeneous studies; not an individualized kilogram prescription or evidence that any branded routine is best. A weekly volume association is not a mandatory minimum for every individual."},
-    {"id":"auto2022","title":"Hickmott et al.: Load and Volume Autoregulation (2022)","url":"https://pubmed.ncbi.nlm.nih.gov/35038063/","kind":"systematic review and meta-analysis","population":"Resistance-trained individuals; 15 studies","tags":"autoregulation RIR RPE fatigue progression авторегуляція втома прогрес запас",
-     "summary":"Autoregulated and standardized load prescription produced similar strength improvements. Velocity-loss comparisons suggested trade-offs between fatigue, strength and hypertrophy. Effort feedback can support individual adjustment, but autoregulation is not proven universally superior.","limitations":"Small evidence base for some comparisons. Velocity measurements are not interchangeable with subjective RIR. Does not validate an AI coach or a fixed percentage reduction after illness."},
-    {"id":"rir2024","title":"Robinson et al.: Proximity to Failure Meta-Regressions (2024)","url":"https://pubmed.ncbi.nlm.nih.gov/38970765/","kind":"meta-regression","population":"Resistance-training studies with estimated repetitions in reserve","tags":"failure RIR strength hypertrophy відмова запас повторення м’язи сила",
-     "summary":"The relationship between proximity to failure and adaptation differed for strength and hypertrophy. Hypertrophy was more meaningfully related to estimated RIR than strength was.","limitations":"RIR was estimated from study descriptions. Associations do not establish an exact optimal RIR for this user or require every set to failure."},
-    {"id":"trial2024","title":"Refalo et al.: Failure versus Repetitions in Reserve (2024)","url":"https://pubmed.ncbi.nlm.nih.gov/38393985/","kind":"training intervention","population":"Resistance-trained participants; eight weeks; quadriceps outcomes","tags":"failure RIR hypertrophy fatigue відмова втома гіпертрофія запас",
-     "summary":"Stopping close to failure, around one or two repetitions in reserve, produced similar quadriceps hypertrophy to momentary failure in this eight-week comparison.","limitations":"Short duration and muscle-specific findings; do not generalize to all exercises, all trainees or long-term outcomes."},
-    {"id":"volume2019","title":"Schoenfeld et al.: Training Volume in Trained Men (2019)","url":"https://pubmed.ncbi.nlm.nih.gov/30153194/","kind":"randomized controlled trial","population":"34 resistance-trained men; one, three or five sets per exercise","tags":"volume hypertrophy strength trained обсяг підходи досвід м’язи сила",
-     "summary":"Strength improved without significant between-group differences. Some measured hypertrophy outcomes favored greater training volume.","limitations":"Small male sample and limited study duration; more volume is not always better and the study does not prescribe a personal recoverable volume."},
-    {"id":"network2023","title":"Currier et al.: Resistance Training Prescription Network Meta-analysis (2023)","url":"https://pubmed.ncbi.nlm.nih.gov/37414459/","kind":"systematic review and Bayesian network meta-analysis","population":"Healthy adults; mixed experience","tags":"frequency sets load program strength hypertrophy частота вага програма сила м’язи",
-     "summary":"Across the analyzed prescriptions, resistance training improved strength and hypertrophy compared with no exercise. Different combinations of load, sets and frequency were compared.","limitations":"Network rankings are not a personalized ranking of branded programs. Results cannot supply exact weights from body measurements."},
-    {"id":"illness","title":"Mayo Clinic: Exercise and illness","url":"https://www.mayoclinic.org/healthy-lifestyle/fitness/expert-answers/exercise/faq-20058494","kind":"clinical patient guidance, not a training trial","population":"General exercise guidance","tags":"illness fever return recovery sick хвороба хворію температура одужав біль відновлення пропуск",
-     "summary":"Do not exercise with fever, fatigue or widespread muscle aches. Illness can justify reduced intensity and duration or rest. Return gradually as you feel better; seek clinical advice when uncertain.","limitations":"Does not provide an exact post-illness percentage prescription. A language model cannot diagnose illness or provide medical clearance."}
+    {
+      "id": "acsm2026",
+      "title": "ACSM: Resistance Training Prescription (2026)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/",
+      "kind": "overview of reviews / position stand",
+      "population": "Healthy adults; mixed training experience",
+      "tags": "strength hypertrophy frequency volume сила м’язи гіпертрофія обсяг частота план",
+      "summary": "An overview of 137 reviews found that progressive resistance training improves strength and muscle size. Heavier loads favored maximal strength. Higher weekly volume favored hypertrophy; volume-equated frequency comparisons did not establish a universal hypertrophy advantage. Failure training and periodization were not consistently superior. Individual prescription still depends on goals and tolerance.",
+      "limitations": "Group averages, heterogeneous studies; not an individualized kilogram prescription or evidence that any branded routine is best. A weekly volume association is not a mandatory minimum for every individual.",
+      "summary_uk": "Огляд 137 оглядів показав: прогресивні силові тренування покращують силу та розмір м’язів. Більші навантаження сприяли максимальній силі, більший тижневий обсяг — гіпертрофії. За однакового обсягу частота не давала універсальної переваги для гіпертрофії. Тренування до відмови та періодизація не були послідовно кращими. Вибір навантажень залежить від мети й переносимості.",
+      "limitations_uk": "Це середні результати різнорідних досліджень, а не персональні кілограми чи доказ найкращої авторської програми. Зв’язок обсягу з ростом м’язів не означає обов’язкового мінімуму для кожної людини."
+    },
+    {
+      "id": "auto2022",
+      "title": "Hickmott et al.: Load and Volume Autoregulation (2022)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35038063/",
+      "kind": "systematic review and meta-analysis",
+      "population": "Resistance-trained individuals; 15 studies",
+      "tags": "autoregulation RIR RPE fatigue progression авторегуляція втома прогрес запас",
+      "summary": "Autoregulated and standardized load prescription produced similar strength improvements. Velocity-loss comparisons suggested trade-offs between fatigue, strength and hypertrophy. Effort feedback can support individual adjustment, but autoregulation is not proven universally superior.",
+      "limitations": "Small evidence base for some comparisons. Velocity measurements are not interchangeable with subjective RIR. Does not validate an AI coach or a fixed percentage reduction after illness.",
+      "summary_uk": "У тренованих учасників авторегуляція та стандартне призначення навантажень дали подібні прирости сили. Порівняння втрати швидкості показали компроміси між втомою, силою й гіпертрофією. Дані про фактичне зусилля допомагають індивідуально коригувати тренування, але універсальної переваги авторегуляції не доведено.",
+      "limitations_uk": "Для частини порівнянь доказів мало. Виміряна швидкість руху та суб’єктивний запас повторень RIR не взаємозамінні. Огляд не перевіряв ШІ-тренера чи фіксоване зниження ваги після хвороби."
+    },
+    {
+      "id": "rir2024",
+      "title": "Robinson et al.: Proximity to Failure Meta-Regressions (2024)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38970765/",
+      "kind": "meta-regression",
+      "population": "Resistance-training studies with estimated repetitions in reserve",
+      "tags": "failure RIR strength hypertrophy відмова запас повторення м’язи сила",
+      "summary": "The relationship between proximity to failure and adaptation differed for strength and hypertrophy. Hypertrophy was more meaningfully related to estimated RIR than strength was.",
+      "limitations": "RIR was estimated from study descriptions. Associations do not establish an exact optimal RIR for this user or require every set to failure.",
+      "summary_uk": "Зв’язок близькості до відмови з адаптацією відрізнявся для сили й гіпертрофії. Гіпертрофія була тісніше пов’язана з оціненим запасом повторень RIR, ніж сила.",
+      "limitations_uk": "RIR оцінювали за описами досліджень. Ці зв’язки не визначають точний оптимальний RIR для користувача та не вимагають виконувати кожен підхід до відмови."
+    },
+    {
+      "id": "trial2024",
+      "title": "Refalo et al.: Failure versus Repetitions in Reserve (2024)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38393985/",
+      "kind": "training intervention",
+      "population": "Resistance-trained participants; eight weeks; quadriceps outcomes",
+      "tags": "failure RIR hypertrophy fatigue відмова втома гіпертрофія запас",
+      "summary": "Stopping close to failure, around one or two repetitions in reserve, produced similar quadriceps hypertrophy to momentary failure in this eight-week comparison.",
+      "limitations": "Short duration and muscle-specific findings; do not generalize to all exercises, all trainees or long-term outcomes.",
+      "summary_uk": "У восьмитижневому порівнянні тренованих учасників завершення підходів близько до відмови, приблизно з 1–2 повтореннями в запасі, дало подібну гіпертрофію квадрицепса до виконання до моментальної відмови.",
+      "limitations_uk": "Короткий період та результати для конкретного м’яза. Не можна автоматично переносити висновки на всі вправи, людей і довгострокові результати."
+    },
+    {
+      "id": "volume2019",
+      "title": "Schoenfeld et al.: Training Volume in Trained Men (2019)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/30153194/",
+      "kind": "randomized controlled trial",
+      "population": "34 resistance-trained men; one, three or five sets per exercise",
+      "tags": "volume hypertrophy strength trained обсяг підходи досвід м’язи сила",
+      "summary": "Strength improved without significant between-group differences. Some measured hypertrophy outcomes favored greater training volume.",
+      "limitations": "Small male sample and limited study duration; more volume is not always better and the study does not prescribe a personal recoverable volume.",
+      "summary_uk": "У дослідженні 34 тренованих чоловіків порівнювали один, три та п’ять підходів на вправу. Сила покращилась без значущих відмінностей між групами; частина вимірів гіпертрофії була кращою за більшого обсягу.",
+      "limitations_uk": "Невелика чоловіча вибірка та обмежена тривалість. Більший обсяг не завжди кращий; дослідження не визначає персональний обсяг, від якого людина здатна відновитися."
+    },
+    {
+      "id": "network2023",
+      "title": "Currier et al.: Resistance Training Prescription Network Meta-analysis (2023)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37414459/",
+      "kind": "systematic review and Bayesian network meta-analysis",
+      "population": "Healthy adults; mixed experience",
+      "tags": "frequency sets load program strength hypertrophy частота вага програма сила м’язи",
+      "summary": "Across the analyzed prescriptions, resistance training improved strength and hypertrophy compared with no exercise. Different combinations of load, sets and frequency were compared.",
+      "limitations": "Network rankings are not a personalized ranking of branded programs. Results cannot supply exact weights from body measurements.",
+      "summary_uk": "Силові тренування покращували силу й гіпертрофію порівняно з відсутністю вправ. Мережевий метааналіз порівнював різні поєднання ваги, кількості підходів та частоти у здорових дорослих із різним досвідом.",
+      "limitations_uk": "Рейтинг поєднань параметрів не є персональним рейтингом авторських програм. Результати не дають точних робочих ваг за обхватами тіла."
+    },
+    {
+      "id": "illness",
+      "title": "Mayo Clinic: Exercise and illness",
+      "url": "https://www.mayoclinic.org/healthy-lifestyle/fitness/expert-answers/exercise/faq-20058494",
+      "kind": "clinical patient guidance, not a training trial",
+      "population": "General exercise guidance",
+      "tags": "illness fever return recovery sick хвороба хворію температура одужав біль відновлення пропуск",
+      "summary": "Do not exercise with fever, fatigue or widespread muscle aches. Illness can justify reduced intensity and duration or rest. Return gradually as you feel better; seek clinical advice when uncertain.",
+      "limitations": "Does not provide an exact post-illness percentage prescription. A language model cannot diagnose illness or provide medical clearance.",
+      "summary_uk": "Не тренуйся з температурою, вираженою втомою чи поширеним м’язовим болем. Хвороба може потребувати відпочинку або зменшення інтенсивності й тривалості. Повертайся поступово за покращення самопочуття; за сумнівів звернись до лікаря.",
+      "limitations_uk": "Це загальна клінічна порада, а не силовий експеримент. Вона не задає точного відсотка зниження ваги після хвороби. Мовна модель не встановлює діагноз та не дає медичного допуску."
+    }
   ]
 }

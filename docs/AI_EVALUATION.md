@@ -15,3 +15,5 @@ The model selects a relative load fraction. Python computes loads from an exerci
 Install the model using SETUP_AI.cmd, start Ollama, then run EVALUATE_AI.cmd. The six scenarios use synthetic athletes only. The block scenario tests both generation and the first session after approval. Reports preserve the model name, corpus hash, timings and outputs. Older reports are retained to show failures transparently.
 
 Application acceptance is a guard result, not proof of source entailment or appropriate individual training. The language guard checks script proportions, not Ukrainian fluency. The small curated evidence corpus is retrieval context, not model fine-tuning. Exact loads and personal outcomes are not established by group studies. Review each proposal before approving it.
+
+The evidence file retains original English summaries and limitations alongside Ukrainian translations. Only the Ukrainian evidence text, ID and original source title enter coaching prompts. The corpus hash records this change. The general uncertainty notice is an application disclosure, so the model cannot truncate or replace it with an invented guarantee.

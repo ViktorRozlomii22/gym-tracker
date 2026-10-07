@@ -37,6 +37,10 @@ def model_name():
     return os.getenv('OLLAMA_MODEL','qwen3:4b-instruct-2507-q4_K_M')
 
 def call_model(system, payload, schema):
+    payload=copy.deepcopy(payload)
+    if 'sources' in payload:
+        payload['sources']=[{'id':c['id'],'title':c['title'],'summary':c.get('summary_uk',c['summary']),
+            'limitations':c.get('limitations_uk',c['limitations'])} for c in payload['sources']]
     schema=copy.deepcopy(schema)
     ids=[c['id'] for c in payload.get('sources',[])]
     exercises=list(payload.get('choices') or payload.get('exercise_ids') or {})
@@ -108,7 +112,7 @@ def call_model(system, payload, schema):
         schema['properties']['uncertainty']['enum']=['Це стартова оцінка; перевір вагу на розминці та коригуй за фактичним RIR. Джерела не визначають твої точні кілограми.']
     body={'model':model_name(),'stream':False,'think':False,'keep_alive':0,
           'format':schema,'options':{'temperature':0.2,'num_ctx':8192,'num_predict':2600 if 'weeks' in schema.get('properties',{}) else 2000},
-          'messages':[{'role':'system','content':system+' Keep prose concise, complete sentences: rationale <=25 words; uncertainty <=15 words; each exercise reason <=8 words; each week note <=12 words; title <=6 words. Усі пояснення, назви сесій та тижневі вказівки пиши лише українською. JSON-ключі та exercise ID не перекладай. Досвід задано в роках, а не місяцях. Не стверджуй, що людина здорова, якщо дані вказують на відновлення. /no_think'},
+          'messages':[{'role':'system','content':system+' Keep prose concise, complete sentences: rationale <=25 words; uncertainty <=15 words; each exercise reason <=8 words; each week note <=12 words; title <=6 words. RIR — запас повторень до відмови. Авторегуляція означає корекцію за фактичним зусиллям, а не «автозапис». Для назви використовуй «Сесія», а не «Підсумок». Усі пояснення, назви сесій та тижневі вказівки пиши лише українською. JSON-ключі та exercise ID не перекладай. Досвід задано в роках, а не місяцях. Не стверджуй, що людина здорова, якщо дані вказують на відновлення. /no_think'},
                       {'role':'user','content':json.dumps(payload,ensure_ascii=False)}]}
     request=urllib.request.Request('http://127.0.0.1:11434/api/chat',json.dumps(body).encode(),{'Content-Type':'application/json'})
     try:

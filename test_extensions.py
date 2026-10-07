@@ -56,7 +56,11 @@ class Extensions(unittest.TestCase):
         original=copy.deepcopy(rag.PLAN_SCHEMA)
         with patch.object(rag.urllib.request,'urlopen',return_value=reply) as request:
             rag.call_model('Тест.',payload,rag.PLAN_SCHEMA)
-        schema=json.loads(request.call_args.args[0].data)['format']
+        body=json.loads(request.call_args.args[0].data)
+        supplied=json.loads(body['messages'][1]['content'])
+        self.assertEqual(supplied['sources'][0]['summary'],self.cards[0]['summary_uk'])
+        self.assertNotIn('summary_uk',supplied['sources'][0])
+        schema=body['format']
         self.assertEqual(len(schema['properties']['uncertainty']['enum']),1)
         branches=schema['properties']['items']['items']['oneOf']
         unknown=next(x for x in branches if x['properties']['exercise']['enum']==['goblet'])

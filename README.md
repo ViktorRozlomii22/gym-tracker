@@ -95,3 +95,11 @@ See [Build and release](docs/DEVELOPMENT.md) for creating the Windows app and [U
 ## License
 
 See [LICENSE](LICENSE) for the application and included component terms.
+
+
+## After an upgrade
+
+1. Stop the old bot with `STOP.cmd` before opening the new version.
+2. Keep your existing `data/` folder beside the new `NextSet.exe`.
+3. Start the new app and check `/history` and your measurements in Telegram.
+4. Keep the previous database backup until you have checked that your records are present.

@@ -1,3 +1,13 @@
+## NextSet UA 1.2.1
+
+- Training plans open as short Ukrainian exercise lists instead of automatically sending a PNG calendar.
+- Optional **План Excel** (`/planexcel`) exports all weeks with dates, exercises, sets, repetitions, kg and repetitions in reserve.
+- Working kg are included only for today's matching session in the accepted block. Missing and future weights remain unspecified; PRs are never copied as working weights.
+- The reference workbook influences layout only. Generated exercises, weekly guidance, substitutions and actual progress tracking are preserved.
+- 83 regression tests pass, including text-only delivery, weight provenance and safe Excel text cells. The Windows executable passes its packaged self-check.
+
+Keep your existing `data/` folder when upgrading. Model inference is not needed just to view or export a saved plan.
+
 ## NextSet UA 1.2.0
 
 - Simpler Ukrainian home screen, guided profile and actual-PR entry, and support for `/profile:` text.

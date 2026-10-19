@@ -1,3 +1,14 @@
+## NextSet UA 1.2.0
+
+- Simpler Ukrainian home screen, guided profile and actual-PR entry, and support for `/profile:` text.
+- Ten method cards grouped by goal, with focus, suitability, practical pros/cons, progression and primary sources. Choosing a different method requires confirmation.
+- Eight-week blocks by default (4–8 supported) and a dated PNG calendar with 24 training slots. Plans and actual progress remain separate; 56-day progress charts are available.
+- Coaching requests run in the background with elapsed time, status, cancellation, persisted results, stale-data protection and explicit failure/interruption states.
+- Clear `nextset/` package structure, separate tests, canonical SQLite module and architecture documentation. Existing user data needs no schema migration.
+- Windows system TLS trust for both Telegram transports, retaining certificate and hostname checks.
+
+Keep your existing `data/` folder when upgrading. Local Qwen remains optional and separately installed; its weights are not fine-tuned by this release.
+
 ## NextSet UA 1.1.1
 
 Download **NextSet-UA-Windows.zip**, extract it, and open **NextSet.exe**.

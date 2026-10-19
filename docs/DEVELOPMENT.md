@@ -2,14 +2,16 @@
 
 ## Layout
 
-- `launcher.py`: first-run setup and portable app entry point.
-- `runtime.py`: Telegram routing, pairing and polling.
-- `handlers_*.py`: adapted upstream conversation and export modules.
-- `database_sqlite.py`: local storage implementing the NextSet database interface.
-- `diary.py`: history, quick entries, graphs and reminders.
-- `local_ai.py`: optional validated localhost Ollama extraction.
-- `paths.py`: separates persistent `data/` from bundled resources.
-- `tests`: `test_nextset.py` and `test_packaging.py`.
+- `launcher.py`: thin, stable Windows entry point; implementation in `nextset/launcher.py`.
+- `nextset/telegram/`: Telegram routing, guided UI, conversation and export handlers.
+- `nextset/coaching/`: training state, proposals, blocks, feedback and background jobs.
+- `nextset/ai/`: reviewed evidence retrieval, local Ollama protocol, setup and evaluation.
+- `nextset/storage/`: one canonical SQLite module and consistent backups.
+- `nextset/core/`, `nextset/knowledge/`: shared identities/arithmetic and reviewed catalogue access.
+- `nextset/visuals/`, `nextset/platform/`: charts, calendars, portable paths and Windows transport.
+- `tests/`: regression, integration, packaging and architecture-boundary checks.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for responsibilities and extension points.
 
 ## Test
 
@@ -17,7 +19,7 @@ Use Python 3.12 on Windows:
 
 ```powershell
 python -m pip install -r requirements.lock
-python -m unittest discover -p "test_*.py" -v
+python -m unittest discover -s tests -p "test_*.py" -v
 python launcher.py --check
 python scripts/check_release.py
 ```

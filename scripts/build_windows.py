@@ -36,6 +36,7 @@ def main():
         shutil.copy2(executable,stage/'NextSet.exe')
         shutil.copy2(ROOT/'docs'/'PROGRAMS.md',stage/'PROGRAMS.md')
         shutil.copy2(ROOT/'docs'/'TRAINING_GUIDE.md',stage/'TRAINING_GUIDE.md')
+        shutil.copy2(ROOT/'docs'/'METHODS.md',stage/'METHODS.md')
         licenses=stage/'THIRD_PARTY_LICENSES'
         licenses.mkdir()
         runtime_names=[line.split('==')[0] for line in (ROOT/'requirements.lock').read_text().splitlines() if '==' in line]

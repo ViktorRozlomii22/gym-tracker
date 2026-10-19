@@ -79,6 +79,8 @@ The running bot creates one local database backup per day. `/backup` creates ano
 
 ## Running from source
 
+Application code is organized under `nextset/`, with separate packages for Telegram, coaching, local AI, storage and visuals. Tests live in `tests/`. See [Architecture](docs/ARCHITECTURE.md) for responsibilities and extension points. The Windows launcher remains unchanged; `python -m nextset` is also supported.
+
 Install Python 3.12 (x64), download/clone this repository, and double-click **`START.cmd`**. It installs dependencies into a project-local `.packages` folder and starts the same first-run setup.
 
 For development:
@@ -88,7 +90,7 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.lock
 python launcher.py
-python -m unittest discover -p "test_*.py" -v
+python -m unittest discover -s tests -p "test_*.py" -v
 python launcher.py --check
 ```
 

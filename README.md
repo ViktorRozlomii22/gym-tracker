@@ -20,7 +20,7 @@ That's it. Leave the window open while using the bot. Next time, just double-cli
 
 ## Adaptive plans for experienced lifters
 
-Choose among five program orientations for three training days with `/programs`. Enter your profile and recent PRs, request a stable 4–6 week `/block`, check in before training, then request `/plan` and record actual sets and exercise feedback. Illness, missed sessions, equipment substitutions and an optional light fourth day are supported. Qwen generates individual proposals from a local research library and your history; source links, numeric checks and explicit approval accompany each plan. This is RAG, not model fine-tuning. Coaching remains experimental. See the [training tools guide](docs/TRAINING_GUIDE.md) and [adaptation rules](docs/PROGRAMS.md).
+Browse ten reviewed method cards by goal with `/programs`; each explains focus, suitability, advantages, trade-offs and progression. Use the guided profile and actual-PR questions, request a stable 4–8 week `/block` (eight by default), check in before training, then request `/plan` and record actual sets and exercise feedback. Illness, missed sessions, equipment substitutions and an optional light fourth day are supported. Qwen generates individual proposals from a local research library and your history; source links, numeric checks and explicit approval accompany each plan. This is RAG, not model fine-tuning. Coaching remains experimental. See the [training tools guide](docs/TRAINING_GUIDE.md) and [adaptation rules](docs/PROGRAMS.md).
 
 ## What you can do
 
@@ -30,7 +30,9 @@ Choose among five program orientations for three training days with `/programs`.
 | Different sets and weights | Choose an exercise in the menu, enter one `weight reps` pair per line |
 | Full workout diary | `/history`, `/history 2` |
 | One exercise's history | `/exercise Жим лежачи` |
-| Progress charts | `/graph 7`, `/graph 30`, `/graph 90`, `/graph 365` |
+| Eight-week calendar | **🗓 Мій план** shows 24 dated training slots; details stay behind a separate button |
+| AI request status | `/aistatus`, `/airesult`, `/aicancel`; the diary stays responsive during planning |
+| Progress charts | `/graph 7`, `/graph 30`, `/graph 56`, `/graph 90`, `/graph 365` |
 | Exercise chart | `/graph 90 Жим лежачи` |
 | Body measurements | `/measure біцепс лівий 35,5 см; талія 82 см; вага 80 кг` |
 | Measurement chart | `/graph 365 біцепс лівий` |
@@ -95,7 +97,6 @@ See [Build and release](docs/DEVELOPMENT.md) for creating the Windows app and [U
 ## License
 
 See [LICENSE](LICENSE) for the application and included component terms.
-
 
 ## After an upgrade
 

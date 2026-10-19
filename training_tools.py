@@ -185,9 +185,9 @@ async def handle(update,context,cmd,arg,state,now):
     if cmd=='/block':
         if not arg and state.get('block'):
             return render_block(state['block']),False
-        value=number(arg or '4',4,6)
+        value=number(arg or '8',4,8)
         if not value.is_integer():
-            raise ValueError('Довжина блоку — 4, 5 або 6 тижнів.')
+            raise ValueError('Довжина блоку — ціле число від 4 до 8 тижнів.')
         await update.message.reply_text('🧠 Готую структуру блоку за джерелами…')
         draft=await asyncio.to_thread(propose_block,state,int(value),now)
         state['block_draft']=draft
@@ -198,7 +198,7 @@ async def handle(update,context,cmd,arg,state,now):
             raise ValueError('Немає доступної пропозиції блоку або план на паузі.')
         if state.get('block'):
             state.setdefault('block_history',[]).append(state['block'])
-        draft.update(approved=True,start_cursor=state['cursor'])
+        draft.update(approved=True,start_cursor=state['cursor'],schedule_start=now.date().isoformat())
         state.update(block=draft,block_draft=None,pending=None,swap_draft=None)
         return '✅ Блок прийнято. Вправи стабільні; ШІ адаптує навантаження за відгуками. /checkin → /plan',True
     if cmd=='/blockreject':

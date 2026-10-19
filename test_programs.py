@@ -164,6 +164,8 @@ class Routing(unittest.IsolatedAsyncioTestCase):
             message=SimpleNamespace(message_id=0,text='',reply_text=AsyncMock())
             update=SimpleNamespace(message=message,effective_user=SimpleNamespace(id=1))
             context=SimpleNamespace(user_data={})
+            import asyncio
+            context.application=SimpleNamespace(bot_data={},create_task=asyncio.create_task)
             async def send(text):
                 message.message_id+=1
                 message.text=text
@@ -177,6 +179,7 @@ class Routing(unittest.IsolatedAsyncioTestCase):
                     'reason':'Контроль обсягу.','citations':['acsm2026']}]}
             with patch.object(rag,'call_model',return_value=result):
                 await send('/plan')
+                await context.application.bot_data['training_ai_job']['task']
             self.assertFalse(p.load(1)['pending']['approved'])
             self.assertIsNone(db.get_current_training(1))
             await send('/planconfirm')

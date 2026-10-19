@@ -71,7 +71,7 @@ async def ready(app):
     await app.bot.set_my_short_description('Щоденник тренувань українською · вправи, повторення, кг та прогрес')
     await app.bot.set_my_name('Щоденник тренувань')
     commands = await app.bot.get_my_commands()
-    await app.bot.set_my_commands(list(commands) + [BotCommand('programs','Обрати орієнтир на 3 дні'),BotCommand('coachhelp','Профіль, PR та адаптація плану'),BotCommand('plan','Наступна сесія з джерелами'),BotCommand('ask','Питання до наукової бази'),BotCommand('sources','Джерела локальної бази'),BotCommand('status','Самопочуття або хвороба'),BotCommand('extra','Легкий четвертий день'),BotCommand('checkin','Сон, енергія та час перед сесією'),BotCommand('block','План на 4–6 тижнів'),BotCommand('feedback','RIR, біль та складність вправи'),BotCommand('swap','Замінити вправу в плані'),BotCommand('weekly','Звіт за останні 7 днів'),BotCommand('weeklyai','Висновки за тиждень з джерелами'),BotCommand('backup','Локальна резервна копія')])
+    await app.bot.set_my_commands(list(commands) + [BotCommand('programs','Обрати орієнтир на 3 дні'),BotCommand('coachhelp','Профіль, PR та адаптація плану'),BotCommand('plan','Наступна сесія з джерелами'),BotCommand('ask','Питання до наукової бази'),BotCommand('sources','Джерела локальної бази'),BotCommand('status','Самопочуття або хвороба'),BotCommand('extra','Легкий четвертий день'),BotCommand('checkin','Сон, енергія та час перед сесією'),BotCommand('block','Графік на 8 тижнів'),BotCommand('feedback','RIR, біль та складність вправи'),BotCommand('swap','Замінити вправу в плані'),BotCommand('weekly','Звіт за останні 7 днів'),BotCommand('weeklyai','Висновки за тиждень з джерелами'),BotCommand('backup','Локальна резервна копія')])
     print(f'Bot is running: https://t.me/{app.bot.username}',flush=True)
     if db.setting('owner') is None:
         print(f'To pair your account, send: /start {app.bot_data["pair_code"]}',flush=True)
@@ -93,8 +93,12 @@ def build_app(token,pair_code):
     builder = Application.builder().token(token).concurrent_updates(False).post_init(ready)
     try:
         from telegram.request import HTTPXRequest
-        request = HTTPXRequest()
-        polling = HTTPXRequest()
+        # Windows trust includes locally managed roots that certifi may omit.
+        # Keep hostname and certificate verification enabled.
+        import ssl
+        tls = ssl.create_default_context()
+        request = HTTPXRequest(httpx_kwargs={'verify':tls})
+        polling = HTTPXRequest(httpx_kwargs={'verify':tls})
     except PermissionError:
         from windows_transport import WindowsRequest
         request, polling = WindowsRequest(), WindowsRequest()

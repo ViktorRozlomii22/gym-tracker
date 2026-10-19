@@ -5,11 +5,11 @@ The bot speaks Ukrainian. These instructions are in English. Diary, check-in, fe
 ## A normal training day
 
 1. Choose an orientation with `/programs` and enter your profile and recent, actually performed PRs with `/coachhelp`. Enter four years of experience if applicable. Measurements belong in `/measure`; they never determine your strength.
-2. Request `/block 4`, `/block 5` or `/block 6`. Qwen proposes three recurring sessions, exercise IDs, set/repetition/RIR ranges and weekly guidance. Review them, then `/blockconfirm` or `/blockreject`. You can continue using individual sessions without a block.
+2. Press **✨ Створити 8 тижнів** or request `/block 8` (any whole number from 4 to 8 is supported). Qwen proposes three recurring sessions, exercise IDs, set/repetition/RIR ranges and weekly guidance. Review them, then `/blockconfirm` or `/blockreject`. You can continue using individual sessions without a block.
 3. Press **✅ Перед тренуванням** or send `/checkin`. Answer the four button prompts: sleep hours, energy 1–5, soreness 0–5, available minutes. Decimal sleep hours are allowed. A check-in clears an old session proposal but cannot lift an illness/pain pause.
 4. Request `/plan`. Within an accepted block, exercise selection and ranges stay stable. Qwen adapts the next proposal using actual history, effort, check-in and weekly guidance. Review the weights and explanations; `/planconfirm` accepts the session. A plan that violates its blueprint or app guards is rejected, never silently replaced by a hardcoded routine.
 5. Log actual sets, for example `Жим лежачи 3x8 60 кг`. Add exercise feedback: `/feedback Жим лежачи; 2; ні; 4; останній підхід важкий`. Fields are exercise, lowest RIR 0–5, pain `так`/`ні`, difficulty 1–5, optional note. Feedback requires today's saved sets of that exercise. Reported pain pauses coaching. Feedback is separate from a strength PR.
-6. `/done 3` finishes the accepted session using actual saved sets. The lower of session RIR and exercise RIR is retained. Completed main sessions advance the block; skips and extra sessions do not. Blocks represent 12–18 completed main sessions, so a missed week extends their calendar duration.
+6. `/done 3` finishes the accepted session using actual saved sets. The lower of session RIR and exercise RIR is retained. Completed main sessions advance the block; skips and extra sessions do not. Blocks represent 12–24 completed main sessions, so a missed week extends their calendar duration.
 
 ## Changing equipment
 

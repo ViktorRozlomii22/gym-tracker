@@ -265,6 +265,11 @@ class Extensions(unittest.TestCase):
         self.assertFalse((self.root/'eval').exists())
 
 class TelegramExtensions(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.temp=tempfile.TemporaryDirectory()
+        self.database=patch.object(db,'DB_PATH',Path(self.temp.name)/'test.db')
+        self.database.start();db.ensure_bot_schema()
+        self.addCleanup(self.temp.cleanup);self.addCleanup(self.database.stop)
     async def test_menu_buttons_do_not_pass_caption_as_command_argument(self):
         update=SimpleNamespace(message=SimpleNamespace(text='🗓 Блок тренувань'),effective_user=SimpleNamespace(id=1))
         context=SimpleNamespace(user_data={})

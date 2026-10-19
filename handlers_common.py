@@ -146,14 +146,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 Вибери дію:
     """
     
-    keyboard = [
-        ['💪 Почати тренування', '📊 Історія тренувань'],
-        ['🧭 Програми', '📋 Мій план', '🧠 Налаштувати план'],
-        ['✅ Перед тренуванням', '🗓 Блок тренувань'],
-        ['📆 Звіт за тиждень', '💾 Резервна копія'],
-        ['📝 Мої вправи', '📈 Статистика', '📏 Мої виміри'],
-        ['📤 Експорт даних', '❓ Довідка']
-    ]
+    from friendly_ui import HOME
+    keyboard = HOME
     
     await update.message.reply_text(
         welcome_text,
@@ -314,6 +308,8 @@ async def handle_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     text = (msg.text or "").strip()
     user_id = msg.from_user.id
     
+    if text == '🔙 Головне меню':
+        return await start(update,context)
     if text == '💪 Почати тренування':
         from handlers_training import start_training
         return await start_training(update, context)

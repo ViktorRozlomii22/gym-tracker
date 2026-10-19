@@ -16,7 +16,13 @@ def load(uid):
     return dict(defaults,**db.setting(f'coach:{uid}',{}))
 
 def save(uid, state):
-    db.set_setting(f'coach:{uid}', state)
+    from ai_jobs import CAPTURE
+    from copy import deepcopy
+    capture=CAPTURE.get()
+    if capture is not None:
+        capture[uid]=deepcopy(state)
+    else:
+        db.set_setting(f'coach:{uid}', state)
 
 def number(value, low, high):
     try:
@@ -195,7 +201,7 @@ def set_status(state, text):
     return result
 
 HELP = '''🧭 Програми · 3 рази на тиждень
-/programs — вибір п’яти адаптованих програм
+/programs — методи: мета, фокус, плюси й мінуси
 /profile вік 30; зріст 180; вага 80; досвід 4; крок 2,5; мета м’язи; обладнання зал
 Зріст у см, вага в кг, досвід у роках; наразі потрібен зал зі штангою та блоками. Обхвати: /measure.
 /pr Жим лежачи; 60; 8; 2026-10-06
@@ -237,11 +243,12 @@ async def handle(update, context, cmd, arg):
     elif cmd=='/coachhelp':
         text=HELP; mutating=False
     elif cmd=='/programs':
-        text='Обери одну програму. Це добірка, не науковий рейтинг; усі версії адаптовані ботом.\n\n'+'\n\n'.join(f'{p["title"]}\n/program {k}\n{p["url"]}' for k,p in CATALOG.items())
-        mutating=False
+        from method_browser import menu
+        await menu(update,context)
+        return
     elif cmd=='/program':
         if arg not in CATALOG:
-            raise ValueError('Обери: /program hypertrophy | madcow | 531 | bridge | fullbody')
+            raise ValueError('Обери метод і прочитай його картку: /programs')
         if state.get('block'):
             state.setdefault('block_history',[]).append(state['block'])
         state.update(program=arg,cursor=0,pending=None,feedback={},block=None,block_draft=None,swap_draft=None)

@@ -283,7 +283,8 @@ def generate(state, now, bonus, recovery):
         minimum_sets=sum(1 if recovery else x['sets'][0] for x in session['items'])
         if minimum_sets>set_budget(state,now,recovery or bonus):
             raise ValueError('Затверджений блок не вміщується у доступний час. Зміни час або переглянь блок; вправи не змінено.')
-    payload={'athlete':context_for(state,now),'reference':references()[state['program']],
+    from method_browser import model_reference
+    payload={'athlete':context_for(state,now),'reference':model_reference(state['program']),
              'sources':cards,'exercise_ids':exercise_ids,'estimated_strength_references':limits,
              'request':'light optional fourth session' if bonus else 'next session within a three-day-per-week program',
              'recovery':recovery,'bonus':bonus,'approved_session_blueprint':session,
@@ -307,6 +308,7 @@ def generate(state, now, bonus, recovery):
     if session:
         enforce_session(plan,session,recovery)
         plan['block_week']=session['week']
+        plan['block_id']=state['block'].get('created')
     return plan
 
 def weekly_advice(data, state, now):
@@ -336,7 +338,7 @@ def fitness_question(question):
         return False
     fitness=('тренув','силов','вправ','підход','повтор','гіпертроф','відмов','віднов','хвор','температур',
         'біль','м’яз','мяз','м’яз','мяз','мышц','fitness','training','trainings','workout','exercise','strength',
-        'hypertroph','recovery','illness','failure','muskel','kraft','übung','uebung','wiederhol','satz','sätze','rir','rpe')
+        'періодизац','прогрес','метод','dup','madcow','hypertroph','recovery','illness','failure','muskel','kraft','übung','uebung','wiederhol','satz','sätze','rir','rpe')
     from exercise_catalog import NAMES
     return bool(words & set(NAMES)) or any(word.startswith(prefix) for word in words for prefix in fitness)
 

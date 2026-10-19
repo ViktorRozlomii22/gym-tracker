@@ -144,8 +144,8 @@ async def show_graph(update, context, args):
     from charts import chart
     bits = args.split(maxsplit=1)
     days = int(bits[0]) if bits else 30
-    if days not in (7,30,90,365):
-        raise ValueError('Обери 7, 30, 90 або 365 днів.')
+    if days not in (7,30,56,90,365):
+        raise ValueError('Обери 7, 30, 56, 90 або 365 днів.')
     target = bits[1] if len(bits)>1 else None
     rows = graph_rows(update.effective_user.id,days,target)
     if not rows:
@@ -167,7 +167,7 @@ async def handle_statistics_menu(update, context):
     if update.message.text == '🔙 Головне меню':
         from handlers_common import start
         return await start(update,context)
-    m = re.fullmatch(r'📊 (7|30|90|365) днів',update.message.text)
+    m = re.fullmatch(r'📊 (7|30|56|90|365) днів',update.message.text)
     if m:
         await show_graph(update,context,m[1])
         return STATS_MENU
@@ -189,6 +189,20 @@ async def extras(update, context):
     if not update.message or not update.message.text:
         return
     text = update.message.text.strip()
+    from method_browser import route as method_route
+    try:
+        if await method_route(update,context):
+            raise ApplicationHandlerStop
+    except ValueError as error:
+        await update.message.reply_text(str(error))
+        raise ApplicationHandlerStop
+    from friendly_ui import route as friendly_route
+    try:
+        if await friendly_route(update,context):
+            raise ApplicationHandlerStop
+    except (ValueError,RuntimeError) as error:
+        await update.message.reply_text(str(error))
+        raise ApplicationHandlerStop
     from training_tools import checkin_input
     if await checkin_input(update,context):
         raise ApplicationHandlerStop

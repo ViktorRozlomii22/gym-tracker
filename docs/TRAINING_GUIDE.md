@@ -15,6 +15,12 @@ Kilograms are shown only for today's matching main-session prescription in the a
 5. Log actual sets, for example `Жим лежачи 3x8 60 кг`. Add exercise feedback: `/feedback Жим лежачи; 2; ні; 4; останній підхід важкий`. Fields are exercise, lowest RIR 0–5, pain `так`/`ні`, difficulty 1–5, optional note. Feedback requires today's saved sets of that exercise. Reported pain pauses coaching. Feedback is separate from a strength PR.
 6. `/done 3` finishes the accepted session using actual saved sets. The lower of session RIR and exercise RIR is retained. Completed main sessions advance the block; skips and extra sessions do not. Blocks represent 12–24 completed main sessions, so a missed week extends their calendar duration.
 
+## Record directly from a session
+
+Open **My plan → Next session**, review and accept today's prescription. Each exercise now has a **✍️** button. Enter actual sets as one `kg repetitions` pair per line (for example `60 10` then `60 8`). Each submission appends actual sets; it does not copy prescribed values or replace previous entries. The session shows recorded sets beside each exercise. Use `/history` for full records and `/delete ID` to remove an incorrect exercise entry.
+
+Press **🏁 Завершити сесію** and enter the lowest repetitions in reserve, 0–5, to finish using the existing actual-diary completion checks. Logging does not require Qwen. Cancellation or an invalid/stale session never creates sets. A check mark means actual sets were recorded, not that every prescribed set was completed.
+
 ## Changing equipment
 
 `/swap Жим лежачи; лавка зайнята` asks Qwen to replace one exercise with a catalog alternative of the same movement. The rest of the session stays intact. Review the result; `/swapconfirm` accepts the substitution, `/swapreject` discards it. Accept the updated full session with `/planconfirm`.

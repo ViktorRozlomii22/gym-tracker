@@ -90,13 +90,24 @@ async def session(update,context):
         from nextset.coaching.jobs import begin
         await begin(update,context,'/plan','');return
     from nextset.core.exercises import NAMES
+    from nextset.telegram.plan_logging import actual_sets
+    recorded=actual_sets(update.effective_user.id,state)
     lines=['🏋️ Наступна сесія · '+('прийнято' if plan.get('approved') else 'проєкт')]
     for item in plan['items']:
         weight=f"{item['weight']:g} кг" if item['weight'] is not None else 'підібрати на розминці'
         lines.append(f"• {NAMES[item['key']]}: {item['sets']}×{item['reps']} · {weight} · RIR {item['rir']}")
+        actual=recorded.get(item['key'],[])
+        if actual:
+            lines.append(f'  ✅ Записано {len(actual)} підх.: '+', '.join(f"{s['weight']:g} кг × {s['reps']}" for s in actual[-5:]))
+            if len(actual)>5:lines.append('  Останні 5 підходів; усі — /history')
+        else:lines.append('  ⬜ Ще не записано')
     rows=[] if plan.get('approved') else [['✅ Прийняти сесію','❌ Відхилити сесію']]
+    if plan.get('approved'):
+        rows += [['✍️ '+NAMES[item['key']]] for item in plan['items']]
+        rows += [['🏁 Завершити сесію']]
     rows += [['📄 Деталі сесії','✅ Перед тренуванням'],['🔙 Головне меню']]
-    await update.message.reply_text('\n'.join(lines),reply_markup=keyboard(rows))
+    from nextset.telegram.diary import send_chunks
+    await send_chunks(update.message,'\n'.join(lines),reply_markup=keyboard(rows))
 
 async def deliver(update,context,command,messages):
     if command=='/block':await calendar(update,context)
@@ -109,6 +120,8 @@ async def deliver(update,context,command,messages):
 
 async def route(update,context):
     import nextset.coaching.programs as p
+    from nextset.telegram.plan_logging import route as logging_route
+    if await logging_route(update,context):return True
     text=update.message.text.strip();uid=update.effective_user.id
     ui=db.setting(f'ui:{uid}',{})
     if text in ('/start','/cancel','❌ Скасувати налаштування','🔙 Головне меню') or text.startswith('/start '):
@@ -189,6 +202,7 @@ async def route(update,context):
     if text in aliases:
         await p.handle(update,context,cmd,arg)
         if cmd.startswith('/block'):await calendar(update,context)
+        elif cmd=='/planconfirm':await session(update,context)
         return True
     if ui and not text.startswith('/'):
         try:

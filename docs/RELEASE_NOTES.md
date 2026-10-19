@@ -1,3 +1,10 @@
+## NextSet UA 1.2.2
+
+- Record actual kg and repetitions from per-exercise buttons in an accepted session.
+- See recorded sets beside each exercise and finish the session with a guided RIR prompt.
+- Invalid input, changed plans and unaccepted sessions cannot silently create actual sets. Submissions append actual values, never prescribed performance.
+- 87 regression tests pass, including the complete record-and-finish flow.
+
 ## NextSet UA 1.2.1
 
 - Training plans open as short Ukrainian exercise lists instead of automatically sending a PNG calendar.

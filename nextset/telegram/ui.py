@@ -58,19 +58,30 @@ async def show_profile(update,context):
 
 async def calendar(update,context):
     import nextset.coaching.programs as p
-    from nextset.visuals.calendar import timetable
+    from nextset.coaching.presentation import overview
+    from nextset.telegram.diary import send_chunks
     state=p.load(update.effective_user.id)
     block=state.get('block_draft') or state.get('block')
     if not block:
         await update.message.reply_text('Створимо план із трьома тренуваннями на тиждень. Спочатку профіль і метод, потім графік.',
             reply_markup=keyboard([['✨ Створити 8 тижнів'],['👤 Мій профіль','🧭 Усі методи'],['🔙 Головне меню']]))
         return
-    image=await asyncio.to_thread(timetable,block,state['completed'])
     rows=[['🏋️ Наступна сесія','📄 Деталі плану']]
     if not block.get('approved'):rows.insert(0,['✅ Прийняти блок','❌ Відхилити блок'])
-    rows += [['✨ Створити 8 тижнів'],['🔙 Головне меню']]
-    await update.message.reply_photo(InputFile(io.BytesIO(image),filename='training-calendar.png'),
-        caption='Твій розклад. Кілограми уточнюємо перед кожною сесією за результатами й самопочуттям. Дати — орієнтир; пропущена сесія не вважається виконаною.',reply_markup=keyboard(rows))
+    rows += [['📑 План Excel'],['✨ Створити 8 тижнів'],['🔙 Головне меню']]
+    for message in overview(block,state):
+        await send_chunks(update.message,message,reply_markup=keyboard(rows))
+
+async def export_plan(update,context):
+    import nextset.coaching.programs as p
+    from nextset.telegram.plan_export import workbook_bytes
+    state=p.load(update.effective_user.id)
+    block=state.get('block_draft') or state.get('block')
+    if not block:
+        await calendar(update,context);return
+    data=await asyncio.to_thread(workbook_bytes,block,state)
+    await update.message.reply_document(InputFile(io.BytesIO(data),filename='training-plan.xlsx'),
+        caption='План за тижнями. Порожні кг ще не розраховано; пропущені тренування не вважаються виконаними.')
 
 async def session(update,context):
     import nextset.coaching.programs as p
@@ -119,6 +130,7 @@ async def route(update,context):
         state=p.load(uid);state['weekdays']=[0,2,4] if text.startswith('Пн') else [1,3,5];p.save(uid,state)
         await setup(update,context);return True
     if text=='🗓 Мій план':await calendar(update,context);return True
+    if text in ('📑 План Excel','/planexcel'):await export_plan(update,context);return True
     if text in ('🏋️ Наступна сесія','📋 Мій план') or text=='/plan':await session(update,context);return True
     if text=='📈 Мій прогрес':
         await update.message.reply_text('Покажи фактичний прогрес за період:',reply_markup=keyboard([['📊 7 днів','📊 30 днів'],['📊 56 днів','📊 90 днів','📊 365 днів'],['🔙 Головне меню']]))

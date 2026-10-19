@@ -4,6 +4,10 @@ The bot speaks Ukrainian. These instructions are in English. Diary, check-in, fe
 
 ## A normal training day
 
+**My plan** now shows a short text list of sessions A/B/C instead of automatically sending a calendar image. **План Excel** (`/planexcel`) downloads the full block as a week-by-week table with dates, exercises, sets, repetitions, kilograms and repetitions in reserve. The table contains the user's generated program, not the example workbook's exercises.
+
+Kilograms are shown only for today's matching main-session prescription in the accepted block. They may still be a proposal: review and accept the session before training. Future or unavailable weights stay blank in Excel and explicitly unspecified in chat. Raw PRs are never substituted for working weights. Check-ins, substitutions and skipped sessions retain their existing behavior. Progress charts remain available under **My progress**.
+
 1. Choose an orientation with `/programs` and enter your profile and recent, actually performed PRs with `/coachhelp`. Enter four years of experience if applicable. Measurements belong in `/measure`; they never determine your strength.
 2. Press **✨ Створити 8 тижнів** or request `/block 8` (any whole number from 4 to 8 is supported). Qwen proposes three recurring sessions, exercise IDs, set/repetition/RIR ranges and weekly guidance. Review them, then `/blockconfirm` or `/blockreject`. You can continue using individual sessions without a block.
 3. Press **✅ Перед тренуванням** or send `/checkin`. Answer the four button prompts: sleep hours, energy 1–5, soreness 0–5, available minutes. Decimal sleep hours are allowed. A check-in clears an old session proposal but cannot lift an illness/pain pause.

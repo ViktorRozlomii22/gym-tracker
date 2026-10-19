@@ -1,7 +1,251 @@
 {
-  "hypertrophy": {"title":"SBS Hypertrophy · орієнтир","url":"https://www.strongerbyscience.com/program-bundle/","description":"Experienced lifter, muscle growth; autoregulation, adjustable frequency including three days. Reference only, not the original 21-week template."},
-  "madcow": {"title":"Madcow 5×5 · орієнтир","url":"https://stronglifts.com/madcow-5x5/","description":"Intermediate strength; three-day heavy/light/medium structure and slower progression. Reference only, not the original ramp-set spreadsheet."},
-  "531": {"title":"5/3/1 Full Body · орієнтир","url":"https://www.jimwendler.com/blogs/jimwendler-com/5-3-1-beach-body-performance-based-challenge","description":"Experienced strength training; submaximal training maximum, whole-body sessions and patient progression. Reference only; generate an individualized three-day adaptation, not an official Wendler template."},
-  "bridge": {"title":"The Bridge · орієнтир","url":"https://www.barbellmedicine.com/the-bridge-2/","description":"Post-novice/intermediate strength with RPE feedback and load variation. Reference only; not the original eight-week program."},
-  "fullbody": {"title":"Andy Baker Full Body Hypertrophy · орієнтир","url":"https://www.andybaker.com/programs/full-body-hypertrophy/","description":"Intermediate, three-day whole-body hypertrophy with manageable volume and exercise variety. Reference only; paid template is not included or reproduced."}
+  "hypertrophy": {
+    "title": "SBS Hypertrophy · орієнтир",
+    "url": "https://www.strongerbyscience.com/program-bundle/",
+    "description": "Experienced lifter, muscle growth; autoregulation, adjustable frequency including three days. Reference only, not the original 21-week template.",
+    "category": "muscle",
+    "focus": "Ріст м’язів; навантаження коригується за виконаними повтореннями.",
+    "suited_for": "Досвідченим, хто хоче м’язову масу й готовий ретельно записувати результат.",
+    "pros": [
+      "Різні варіанти частоти й вправ.",
+      "Прогрес залежить від фактичного виконання."
+    ],
+    "cons": [
+      "Важкі останні підходи можуть накопичувати втому.",
+      "Потрібні послідовні записи й контроль зусилля."
+    ],
+    "three_day_fit": "Автор пропонує варіант на три дні; бот створює власні три сесії всього тіла.",
+    "progression": "Орієнтир — виконані повторення; конкретне правило адаптації показується в плані.",
+    "limitations": "Оригінал має 21 тиждень. Блок бота не відтворює його таблицю; підходи до відмови не є обов’язковими.",
+    "sources": [
+      "https://www.strongerbyscience.com/program-bundle/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала."
+  },
+  "madcow": {
+    "title": "Madcow 5×5 · орієнтир",
+    "url": "https://stronglifts.com/madcow-5x5/",
+    "description": "Intermediate strength; three-day heavy/light/medium structure and slower progression. Reference only, not the original ramp-set spreadsheet.",
+    "category": "strength",
+    "focus": "Сила в базових рухах; важкий, легкий та середній день.",
+    "suited_for": "Тим, хто вже не додає вагу кожне тренування й любить стабільні базові вправи.",
+    "pros": [
+      "Зрозумілий тижневий ритм.",
+      "Регулярна практика базових рухів."
+    ],
+    "cons": [
+      "Фіксована тижнева прогресія може бути завеликою при плато.",
+      "Менше свободи для пріоритету окремих м’язів."
+    ],
+    "three_day_fit": "Три дні — рідна структура методу, з відпочинком між сесіями.",
+    "progression": "В оригіналі — тижневе збільшення робочих ваг; у боті з урахуванням фактичних результатів.",
+    "limitations": "Назва 5×5 не означає п’ять однаково важких підходів. Бот не відтворює офіційну таблицю.",
+    "sources": [
+      "https://stronglifts.com/madcow-5x5/workout-guide/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала."
+  },
+  "531": {
+    "title": "5/3/1 Full Body · орієнтир",
+    "url": "https://www.jimwendler.com/blogs/jimwendler-com/5-3-1-beach-body-performance-based-challenge",
+    "description": "Experienced strength training; submaximal training maximum, whole-body sessions and patient progression. Reference only; generate an individualized three-day adaptation, not an official Wendler template.",
+    "category": "strength",
+    "focus": "Довгостроковий розвиток сили з помірним тренувальним максимумом.",
+    "suited_for": "Досвідченим, хто віддає перевагу повільнішому передбачуваному прогресу.",
+    "pros": [
+      "Запас до справжнього максимуму.",
+      "Чітка основа для базових рухів і допоміжних вправ."
+    ],
+    "cons": [
+      "Занадто обережний старт може здаватися повільним.",
+      "Помилковий тренувальний максимум псує призначення ваг."
+    ],
+    "three_day_fit": "Бот адаптує принципи до трьох днів; не всі авторські варіанти мають три тренування.",
+    "progression": "Невеликі зміни тренувального максимуму між циклами замість обов’язкового рекорду щосесії.",
+    "limitations": "Це адаптація принципів 5/3/1, не офіційний шаблон і не копія Beach Body Challenge.",
+    "sources": [
+      "https://www.jimwendler.com/blogs/jimwendler-com/5-3-1-beach-body-performance-based-challenge",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала."
+  },
+  "bridge": {
+    "title": "The Bridge · орієнтир",
+    "url": "https://www.barbellmedicine.com/the-bridge-2/",
+    "description": "Post-novice/intermediate strength with RPE feedback and load variation. Reference only; not the original eight-week program.",
+    "category": "strength",
+    "focus": "Перехід від початкової прогресії до авторегуляції сили через RPE.",
+    "suited_for": "Тим, хто перестав прогресувати за схемою новачка; стаж сам собою не визначає потребу.",
+    "pros": [
+      "Навчання оцінці зусилля.",
+      "Варіації навантаження та рухів."
+    ],
+    "cons": [
+      "Оцінка RPE потребує практики.",
+      "Може не відповідати спеціалізації вже просунутого атлета."
+    ],
+    "three_day_fit": "Три силові сесії з контрольованою зміною навантаження.",
+    "progression": "Вага залежить від цільового RPE та фактичної складності, а не лише календаря.",
+    "limitations": "Авторський Bridge — 8-тижневий перехідний план; бот створює власну адаптацію.",
+    "sources": [
+      "https://www.barbellmedicine.com/the-bridge-2/",
+      "https://pubmed.ncbi.nlm.nih.gov/35038063/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала."
+  },
+  "fullbody": {
+    "title": "Andy Baker Full Body Hypertrophy · орієнтир",
+    "url": "https://www.andybaker.com/programs/full-body-hypertrophy/",
+    "description": "Intermediate, three-day whole-body hypertrophy with manageable volume and exercise variety. Reference only; paid template is not included or reproduced.",
+    "category": "muscle",
+    "focus": "Гіпертрофія всього тіла, основний і полегшений підходи, подвійна прогресія.",
+    "suited_for": "Атлетам середнього рівня, які хочуть м’язи за три відвідування залу.",
+    "pros": [
+      "Усі основні групи протягом тижня.",
+      "Проста логіка додавання повторень перед вагою."
+    ],
+    "cons": [
+      "Мало робочих підходів вимагає якісного виконання.",
+      "Кілька груп за сесію можуть подовжувати тренування."
+    ],
+    "three_day_fit": "Авторська програма розрахована на три дні всього тіла.",
+    "progression": "Спочатку повторення в заданому діапазоні, потім вага; бот враховує запас повторень.",
+    "limitations": "Платний PDF не включено. Тут короткий огляд принципів і власна адаптація.",
+    "sources": [
+      "https://www.andybaker.com/programs/full-body-hypertrophy/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала."
+  },
+  "dup": {
+    "title": "DUP · хвилеподібне навантаження",
+    "description": "Generic daily undulating periodization: three stable whole-body days with different rep/intensity emphases; compare like sessions; adjust to actual RIR. Not a branded template.",
+    "category": "balanced",
+    "focus": "Хвилеподібна зміна важких, середніх і легших акцентів протягом тижня.",
+    "suited_for": "Досвідченим, які хочуть поєднати практику сили з роботою на м’язи.",
+    "pros": [
+      "Різні стимули в одному тижні.",
+      "Можна розподілити втому між днями."
+    ],
+    "cons": [
+      "Складніше порівнювати сесії з різною кількістю повторень.",
+      "Непродуманий обсяг усе одно перевантажує."
+    ],
+    "three_day_fit": "Три сесії всього тіла з різними діапазонами повторень і зусилля.",
+    "progression": "Порівнювати відповідні дні між тижнями; змінювати вагу за виконанням і запасом.",
+    "limitations": "Метааналізи неоднорідні: можлива перевага для сили в тренованих, але універсальної переваги для росту м’язів не встановлено.",
+    "sources": [
+      "https://pubmed.ncbi.nlm.nih.gov/35044672/",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC5571788/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/35044672/"
+  },
+  "linear": {
+    "title": "Лінійна періодизація",
+    "description": "Generic linear periodization for experienced lifters: shift from moderate reps to heavier lower reps across weeks; stable three full-body sessions; adjust after skips; not novice session-by-session linear progression.",
+    "category": "strength",
+    "focus": "Поступове зміщення акценту від більшої кількості повторень до важчих ваг між тижнями.",
+    "suited_for": "Тим, хто любить заздалегідь зрозумілу послідовність і має силову мету.",
+    "pros": [
+      "Зрозумілий напрям циклу.",
+      "Можна поступово підготуватися до важчих підходів."
+    ],
+    "cons": [
+      "Пропуски порушують календарну логіку.",
+      "Без корекції за самопочуттям відсотки можуть не відповідати формі дня."
+    ],
+    "three_day_fit": "Три сесії всього тіла; зміни діапазонів між тижнями, а не обов’язкове додавання кг щодня.",
+    "progression": "Після виконання попереднього етапу поступово змінювати діапазон і вагу; не форсувати після хвороби.",
+    "limitations": "Лінійна періодизація відрізняється від початкової лінійної прогресії. Не доведено, що вона найкраща для кожної мети.",
+    "sources": [
+      "https://pubmed.ncbi.nlm.nih.gov/35044672/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/35044672/"
+  },
+  "double": {
+    "title": "Подвійна прогресія",
+    "description": "Generic double progression in three full-body sessions: increase reps within the prescribed range at target RIR, then smallest available load increment. Stable exercises, no forced weekly increase.",
+    "category": "muscle",
+    "focus": "Подвійна прогресія: спочатку повторення, потім вага.",
+    "suited_for": "Досвідченим, які хочуть простий щоденник і вимірюваний прогрес у м’язах.",
+    "pros": [
+      "Просто бачити прогрес навіть без додавання кг.",
+      "Зручно для тренажерів і гантелей із великим кроком ваги."
+    ],
+    "cons": [
+      "Невеликий приріст може загубитися без однакової техніки.",
+      "Завеликий крок ваги повертає далеко вниз діапазону."
+    ],
+    "three_day_fit": "Метод прогресії, який бот застосовує до трьох сесій всього тіла.",
+    "progression": "Досягти верхньої межі повторень у цільових підходах із потрібним запасом; тоді мінімально збільшити вагу.",
+    "limitations": "Це правило ведення прогресу, а не окрема науково доведена найкраща програма. Приклад застосування — у програмі Andy Baker.",
+    "sources": [
+      "https://www.andybaker.com/programs/full-body-hypertrophy/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала.",
+    "url": "https://www.andybaker.com/programs/full-body-hypertrophy/"
+  },
+  "autoregul": {
+    "title": "Авторегуляція за RIR",
+    "description": "Generic RIR-based autoregulation, three stable full-body days. Adjust loads and volume using actual effort and recovery; not every set to failure; no guarantee of superiority.",
+    "category": "balanced",
+    "focus": "Авторегуляція: підбір ваги й обсягу за фактичним запасом повторень RIR.",
+    "suited_for": "Тим, у кого змінюється сон, стрес і працездатність, та хто готовий записувати зусилля.",
+    "pros": [
+      "Можна реагувати на форму конкретного дня.",
+      "Відокремлює заплановане навантаження від фактичної складності."
+    ],
+    "cons": [
+      "Суб’єктивний запас можна оцінити неправильно.",
+      "Без стабільних вправ легко сплутати втому зі зміною техніки."
+    ],
+    "three_day_fit": "Три стабільні сесії; вага уточнюється після розминки, обсяг — за історією відновлення.",
+    "progression": "Порівнювати повторення, вагу та RIR; підвищувати лише за виконання цілей без надлишкової втоми.",
+    "limitations": "RIR — оцінка, не вимір датчиком. Огляд не доводить універсальну перевагу авторегуляції чи точність ШІ.",
+    "sources": [
+      "https://pubmed.ncbi.nlm.nih.gov/35038063/",
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/35038063/"
+  },
+  "minimal": {
+    "title": "Мінімалістичне тренування",
+    "description": "Generic time-constrained moderate-volume three-day whole-body training: prioritize lower, push, pull; zero to few accessories, prioritize adherence. Trade-off: may limit hypertrophy volume, not claimed optimal.",
+    "category": "balanced",
+    "focus": "Помірний обсяг і пріоритет основних рухів, коли часу мало.",
+    "suited_for": "Тим, хто хоче підтримувати регулярність у зайняті тижні, а не максимальну спеціалізацію.",
+    "pros": [
+      "Простіше вписати у графік.",
+      "Менше вправ і записів за одне відвідування."
+    ],
+    "cons": [
+      "Може бракувати обсягу для максимального росту пріоритетних м’язів.",
+      "Пропуск однієї сесії забирає значну частину тижневого навантаження."
+    ],
+    "three_day_fit": "Три коротші сесії всього тіла: ноги, жим, тяга; аксесуари за наявності часу.",
+    "progression": "Зберігати якість і повторюваність, додавати повторення або вагу за фактичним виконанням.",
+    "limitations": "Низький обсяг — компроміс часу, не гарантія оптимальної гіпертрофії. Тривалість залежить від розминки й відпочинку.",
+    "sources": [
+      "https://acsm.org/resistance-training-guidelines-update-2026/"
+    ],
+    "reviewed": "2026-10-19",
+    "evidence_note": "Опис структури — за джерелами; плюси й мінуси — практична оцінка редакції. Дослідження не доводять перевагу цієї програми для кожного натурала.",
+    "url": "https://acsm.org/resistance-training-guidelines-update-2026/"
+  }
 }

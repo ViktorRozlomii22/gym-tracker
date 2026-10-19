@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-07.1",
-  "reviewed": "2026-10-06",
+  "version": "2026-10-19.1",
+  "reviewed": "2026-10-19",
   "cards": [
     {
       "id": "acsm2026",
@@ -85,6 +85,30 @@
       "limitations": "Does not provide an exact post-illness percentage prescription. A language model cannot diagnose illness or provide medical clearance.",
       "summary_uk": "Не тренуйся з температурою, вираженою втомою чи поширеним м’язовим болем. Хвороба може потребувати відпочинку або зменшення інтенсивності й тривалості. Повертайся поступово за покращення самопочуття; за сумнівів звернись до лікаря.",
       "limitations_uk": "Це загальна клінічна порада, а не силовий експеримент. Вона не задає точного відсотка зниження ваги після хвороби. Мовна модель не встановлює діагноз та не дає медичного допуску."
+    },
+    {
+      "id": "period2022",
+      "title": "Moesgaard et al.: Volume-equated periodization (2022)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35044672/",
+      "kind": "systematic review and meta-analysis",
+      "population": "Resistance-training studies; trained and untrained subgroups",
+      "tags": "periodization linear undulating DUP strength періодизація лінійна хвилеподібна сила метод",
+      "summary": "Volume-equated periodized training favored maximal strength over non-periodized training. Undulating versus linear comparisons favored strength in trained subgroups. Hypertrophy outcomes did not establish a clear difference.",
+      "limitations": "Subgroup results and heterogeneous interventions do not establish a best branded routine or individual kilogram prescription.",
+      "summary_uk": "За однакового обсягу періодизація сприяла максимальній силі порівняно з неперіодизованим тренуванням. Перевага хвилеподібної над лінійною для сили проявлялася у тренованих підгрупах. Чіткої різниці для гіпертрофії не встановлено.",
+      "limitations_uk": "Результати підгруп і різнорідні втручання не визначають найкращої авторської програми чи персональних кілограмів."
+    },
+    {
+      "id": "period2017",
+      "title": "Grgic et al.: Linear versus DUP hypertrophy (2017)",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5571788/",
+      "kind": "systematic review and meta-analysis",
+      "population": "13 eligible volume-equated studies",
+      "tags": "periodization linear undulating DUP hypertrophy періодизація лінійна хвилеподібна м’язи гіпертрофія метод",
+      "summary": "Thirteen studies comparing volume-equated linear and daily undulating periodization showed similar muscle hypertrophy on average.",
+      "limitations": "Evidence across different populations and measurement methods; similar average effects do not imply identical responses in every trained lifter.",
+      "summary_uk": "У 13 дослідженнях із вирівняним обсягом лінійна та щоденна хвилеподібна періодизація дали в середньому подібну гіпертрофію.",
+      "limitations_uk": "Популяції та способи вимірювання різнилися. Подібні середні результати не гарантують однакової реакції кожного досвідченого атлета."
     }
   ]
 }

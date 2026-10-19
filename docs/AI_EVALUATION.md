@@ -38,3 +38,9 @@ Accessory selection now uses a map keyed by exercise ID rather than an array. Th
 The final targeted report is [qwen-20261007-094638.json](evaluation/qwen-20261007-094638.json). The preceding six-case report is [qwen-20261007-093115.json](evaluation/qwen-20261007-093115.json). These are distinct runs, not a claimed 6/6 final full-suite score. Remaining numeric choices and weekly AI advice are experimental and require review.
 
 During CPU evaluation, Ollama reported 3,884,460,276 bytes (about 3.62 GiB) of model allocation at an 8192-token context and zero GPU allocation. This excludes other process/system memory. The download is about 2.5 GB. On this CPU, generation was roughly 6–8 tokens/second; large blocks take several minutes. The isolated evaluation server was stopped after each run. No live Telegram bot was started.
+# Eight-week workflow check — 2026-10-19
+
+After the package refactor, the local `qwen3:4b-instruct-2507-q4_K_M` produced an eight-week, three-session block for the synthetic evaluation athlete with the generic double-progression orientation. The response passed block validation after **312.31 seconds**, and its 24-slot dated calendar was rendered and visually checked. This was one real CPU inference, not a mock or a personal training prescription. A Windows build was running during part of the request, so this is not a controlled latency benchmark.
+
+The package also passed **79 offline regression tests** and the compiled executable's database/parser/chart/export/backup/retrieval/Telegram self-check. These checks establish workflow behavior and structural constraints, not optimal exercise selection, scientific entailment or individual suitability. The model proposed broad effort ranges; its training recommendations still need review. Model weights were not fine-tuned.
+

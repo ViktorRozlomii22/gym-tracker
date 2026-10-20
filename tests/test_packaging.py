@@ -4,10 +4,25 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 import nextset.launcher as launcher
 
 class PackagingTests(unittest.TestCase):
+    def test_close_pause_skips_missing_or_redirected_input(self):
+        for stream in (None, Mock(isatty=Mock(return_value=False))):
+            with self.subTest(stream=stream), patch.object(launcher.sys, 'stdin', stream), patch('builtins.input') as prompt:
+                launcher.pause_before_close()
+                prompt.assert_not_called()
+
+    def test_close_pause_tolerates_console_disconnection(self):
+        stream = Mock(isatty=Mock(return_value=True))
+        for error in (EOFError(), OSError('closed console'), KeyboardInterrupt()):
+            with self.subTest(error=type(error)), patch.object(launcher.sys, 'stdin', stream), patch('builtins.input', side_effect=error):
+                launcher.pause_before_close()
+        with patch.object(launcher.sys, 'stdin', stream), patch('builtins.input', return_value='') as prompt:
+            launcher.pause_before_close()
+            prompt.assert_called_once()
+
     def test_config_is_private_and_validated(self):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)/'data'/'.env'

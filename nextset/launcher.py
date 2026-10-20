@@ -89,6 +89,16 @@ def self_check():
     print('SELF-CHECK PASSED: database, parser, charts, Excel, backup/restore, local evidence retrieval and Telegram application. No LLM started.')
 
 
+def pause_before_close():
+    """Keep interactive windows open, but tolerate detached/closed console input."""
+    try:
+        if sys.stdin and sys.stdin.isatty():
+            input('\nPress Enter to close...')
+    except (EOFError, OSError, KeyboardInterrupt):
+        # Closing a console or stopping a hidden process is a normal exit.
+        pass
+
+
 def main():
     for stream in (sys.stdout,sys.stderr):
         if hasattr(stream,'reconfigure'):
@@ -118,8 +128,7 @@ def main():
         if '--setup-ai' in sys.argv:
             from nextset.ai.setup import setup
             setup()
-            if sys.stdin and sys.stdin.isatty():
-                input('\nPress Enter to close...')
+            pause_before_close()
             return
         configure(force='--setup' in sys.argv)
         from dotenv import load_dotenv
@@ -135,8 +144,7 @@ def main():
     except Exception:
         print('\nCould not start. Check internet access, folder permissions and your bot token.')
         print('If this bot is running on another PC, stop it there first.')
-    if sys.stdin and sys.stdin.isatty():
-        input('\nPress Enter to close...')
+    pause_before_close()
 
 
 if __name__ == '__main__':

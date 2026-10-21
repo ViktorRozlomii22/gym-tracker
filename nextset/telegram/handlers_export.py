@@ -175,6 +175,7 @@ def generate_excel_report(user_id: int, period_type: str):
         "Відстань (м)",
         "Швидкість (км/год)",
         "Коментар / подробиці",
+        "Нотатка підходу",
     ]
     for c, h in enumerate(det_headers, 1):
         cell = ws2.cell(row=1, column=c, value=h)
@@ -224,7 +225,8 @@ def generate_excel_report(user_id: int, period_type: str):
                     ws2.cell(row=dr, column=7, value="")
                     ws2.cell(row=dr, column=8, value="")
                     ws2.cell(row=dr, column=9, value="")
-                    ws2.cell(row=dr, column=10, value="")
+                    ws2.cell(row=dr, column=10, value=exercise.get("details", ""))
+                    ws2.cell(row=dr, column=11, value=set_data.get("note", ""))
                     dr += 1
 
     auto_width(ws2)
@@ -261,6 +263,8 @@ def generate_csv_export(user_id, period_type="all_time"):
             "Відстань (м)",
             "Швидкість (км/год)",
             "Подробиці",
+            "Нотатка підходу",
+            "Нотатка тренування",
         ]
     )
 
@@ -280,6 +284,7 @@ def generate_csv_export(user_id, period_type="all_time"):
                         exercise.get("distance_meters", ""),
                         exercise.get("speed_kmh", ""),
                         exercise.get("details", ""),
+                        "", training.get("comment", ""),
                     ]
                 )
             else:
@@ -296,7 +301,8 @@ def generate_csv_export(user_id, period_type="all_time"):
                             "",
                             "",
                             "",
-                            "Немає підходів",
+                            exercise.get("details", ""),
+                            "", training.get("comment", ""),
                         ]
                     )
                 else:
@@ -314,7 +320,8 @@ def generate_csv_export(user_id, period_type="all_time"):
                                 "",
                                 "",
                                 "",
-                                "",
+                                exercise.get("details", ""),
+                                set_data.get("note", ""), training.get("comment", ""),
                             ]
                         )
 

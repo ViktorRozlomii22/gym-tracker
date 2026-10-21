@@ -378,7 +378,7 @@ async def handle_strength_exercise_selection(update: Update, context: ContextTyp
         "50 12\n"
         "55 10\n"
         "60 8\n\n"
-        "Або введи один підхід: 50 12",
+        "Або введи один підхід із нотаткою: 70x10; відмова",
         reply_markup=ReplyKeyboardRemove()
     )
     return INPUT_SETS
@@ -387,37 +387,11 @@ async def handle_set_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     """Обработка ввода подходов"""
     text = update.message.text
     
-    # Разівбиваем на строки для обработки нескольких подходов
-    lines = text.strip().split('\n')
-    valid_sets = []
-    errors = []
-    
-    for line_num, line in enumerate(lines, 1):
-        if not line.strip():
-            continue
-            
-        line_clean = line.replace(',', '.').replace('/', ' ').replace('х', ' ').replace('x', ' ')
-        parts = line_clean.split()
-        
-        if len(parts) == 2:
-            try:
-                weight = float(parts[0])
-                reps = int(parts[1])
-                if not math.isfinite(weight) or not 0 <= weight <= 1000 or not 1 <= reps <= 1000:
-                    raise ValueError('invalid range')
-                
-                valid_sets.append({
-                    'weight': weight,
-                    'reps': reps
-                })
-                
-            except (ValueError, IndexError):
-                errors.append(f"Рядок {line_num}: неправильний формат '{line}'")
-        else:
-            errors.append(f"Рядок {line_num}: недостатньо даних '{line}'")
-    
-    if errors:
-        await update.message.reply_text("❌ Перевір рядки. Нічого не додано. Вага: 0–1000 кг, повторення: 1–1000.\n" + "\n".join(errors))
+    from nextset.core.diary_entries import parse_sets
+    try:
+        valid_sets = parse_sets(text)
+    except ValueError as error:
+        await update.message.reply_text('❌ Нічого не додано. ' + str(error))
         return INPUT_SETS
     if valid_sets:
         if 'current_exercise' not in context.user_data:
@@ -431,18 +405,13 @@ async def handle_set_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         sets_count = len(context.user_data['current_exercise']['sets'])
         sets_text = "✅ Поточні підходи:\n"
         for i, set_data in enumerate(context.user_data['current_exercise']['sets'], 1):
-            sets_text += f"{i}. {set_data['weight']}кг × {set_data['reps']} повторень\n"
-        
-        error_text = ""
-        if errors:
-            error_text = "\n❌ Помилки:\n" + "\n".join(errors) + "\n"
+            sets_text += f"{i}. {set_data['weight']}кг × {set_data['reps']} повторень" + (' — '+set_data['note'] if set_data.get('note') else '') + '\n'
         
         keyboard = [['✅ Додати ще підходи', '💾 Зберегти вправу'], ['❌ Скасувати вправу']]
-        
-        await update.message.reply_text(
+        from nextset.telegram.diary import send_chunks
+        await send_chunks(update.message,
             f"{sets_text}\n"
             f"Усього підходів: {sets_count}\n"
-            f"{error_text}\n"
             "Вибери дію:",
             reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
         )
@@ -492,18 +461,21 @@ async def save_exercise(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         # Формируем текст сохраненного упражнения
         exercise_text = f"💪 {exercise_data['name']}:\n"
         for i, set_data in enumerate(exercise_data['sets'], 1):
-            exercise_text += f"{i}. {set_data['weight']}кг × {set_data['reps']} повторень\n"
+            exercise_text += f"{i}. {set_data['weight']}кг × {set_data['reps']} повторень" + (' — '+set_data['note'] if set_data.get('note') else '') + '\n'
         
         # Очищаем временные данные
         context.user_data.pop('current_exercise', None)
         
-        await update.message.reply_text(
+        from nextset.telegram.diary import send_chunks
+        await send_chunks(update.message,
             f"✅ Вправу збережено!\n\n{exercise_text}",
             reply_markup=ReplyKeyboardMarkup([
                 ['💪 Силові вправи', '🏃 Кардіо'],
                 ['✏️ Додати власну вправу', '🏁 Завершити тренування']
             ], resize_keyboard=True)
         )
+        from nextset.telegram.notes import clarify_pain
+        await clarify_pain(update,'\n'.join(s.get('note','') for s in exercise_data['sets']))
     else:
         await update.message.reply_text("❌ Не вдалося зберегти вправу.")
     

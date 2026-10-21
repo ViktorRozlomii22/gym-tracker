@@ -1,3 +1,11 @@
+## NextSet UA 1.2.3
+
+- Optional set, exercise and workout notes, with owner-scoped edit/delete commands and history display.
+- Guided and planned set entry accept `70x10; note`; quick exercise entries accept a trailing `; note`.
+- Excel/CSV preserve note scopes, and finishing a workout preserves its existing comment.
+- Pain wording prompts clarification without automatically changing health status.
+- Includes console shutdown and command-navigation fixes. 97 regression tests pass.
+
 ## NextSet UA 1.2.2
 
 - Record actual kg and repetitions from per-exercise buttons in an accepted session.

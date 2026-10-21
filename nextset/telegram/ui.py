@@ -122,6 +122,8 @@ async def route(update,context):
     import nextset.coaching.programs as p
     from nextset.telegram.plan_logging import route as logging_route
     if await logging_route(update,context):return True
+    from nextset.telegram.notes import route as notes_route
+    if await notes_route(update,context):return True
     text=update.message.text.strip();uid=update.effective_user.id
     ui=db.setting(f'ui:{uid}',{})
     if text in ('/start','/cancel','❌ Скасувати налаштування','🔙 Головне меню') or text.startswith('/start '):
@@ -155,7 +157,7 @@ async def route(update,context):
         await update.message.reply_text('Додаткові можливості. Усі команди також доступні через /help і /coachhelp.',reply_markup=keyboard([
             ['🧭 Усі методи','✅ Перед тренуванням'],['📆 Звіт за тиждень','💾 Резервна копія'],
             ['🧠 Стан ШІ','🛑 Скасувати ШІ'],['📏 Мої виміри','📤 Експорт даних'],
-            ['📝 Мої вправи','📊 Історія тренувань'],['❓ Довідка','🔙 Головне меню']]))
+            ['📝 Мої вправи','📊 Історія тренувань'],['📝 Нотатки'],['❓ Довідка','🔙 Головне меню']]))
         return True
     aliases={'✨ Створити 8 тижнів':('/block','8'),'✅ Прийняти блок':('/blockconfirm',''),
         '❌ Відхилити блок':('/blockreject',''),'✅ Прийняти сесію':('/planconfirm',''),

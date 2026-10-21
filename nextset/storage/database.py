@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from nextset.platform.paths import DATA_DIR
+from nextset.core.diary_entries import note_text
 from nextset.core.constants import DEFAULT_STRENGTH_EXERCISES, DEFAULT_CARDIO_EXERCISES
 
 STRENGTH_TYPE, CARDIO_TYPE = 'strength', 'cardio'
@@ -75,9 +76,11 @@ def create_training(user_id):
         c.execute('INSERT OR IGNORE INTO trainings(user_id,date_start) VALUES (?,?)', (user_id,datetime.now().isoformat()))
     return get_current_training(user_id)
 
-def finish_training(training_id, comment=''):
+def finish_training(training_id, comment=None):
+    if comment is not None:
+        note_text(comment)
     with connection() as c:
-        return bool(c.execute('UPDATE trainings SET date_end=?, comment=? WHERE training_id=? AND date_end IS NULL', (datetime.now().isoformat(),comment,training_id)).rowcount)
+        return bool(c.execute('UPDATE trainings SET date_end=?, comment=COALESCE(?,comment) WHERE training_id=? AND date_end IS NULL', (datetime.now().isoformat(),comment,training_id)).rowcount)
 
 def get_user_trainings(user_id, limit=10000, include_active=False):
     with connection() as c:
@@ -93,10 +96,12 @@ def add_exercise_to_training(training_id, exercise_data):
     if not isinstance(e.get('name'), str) or not 1 <= len(e['name'].strip()) <= 80:
         raise ValueError('Назва вправи має містити від 1 до 80 символів.')
     sets = e.get('sets', [])
+    note_text(e.get('details', ''))
     if e['type'] == STRENGTH_TYPE:
         if not 1 <= len(sets) <= 100:
             raise ValueError('Додай від 1 до 100 підходів.')
         for s in sets:
+            note_text(s.get('note', ''))
             if not math.isfinite(s['weight']) or not 0 <= s['weight'] <= 1000 or not isinstance(s['reps'], int) or not 1 <= s['reps'] <= 1000:
                 raise ValueError('Вага: 0–1000 кг; повторення: 1–1000.')
     elif e['type'] != CARDIO_TYPE:
@@ -123,6 +128,29 @@ def get_training_exercises(training_id):
 def delete_exercise_record(user_id, exercise_id):
     with connection() as c:
         return bool(c.execute('DELETE FROM training_exercises WHERE exercise_id=? AND training_id IN (SELECT training_id FROM trainings WHERE user_id=?)', (exercise_id,user_id)).rowcount)
+
+
+def update_diary_note(user_id, kind, record_id, note, set_number=None):
+    note_text(note)
+    with connection() as c:
+        if kind == 'training':
+            changed = c.execute('UPDATE trainings SET comment=? WHERE training_id=? AND user_id=?', (note, record_id, user_id)).rowcount
+        else:
+            row = c.execute('SELECT e.* FROM training_exercises e JOIN trainings t USING(training_id) WHERE e.exercise_id=? AND t.user_id=?', (record_id, user_id)).fetchone()
+            if not row:
+                raise ValueError('Запису з таким номером немає.')
+            if kind == 'exercise':
+                changed = c.execute('UPDATE training_exercises SET details=? WHERE exercise_id=?', (note, record_id)).rowcount
+            elif kind == 'set':
+                sets = json.loads(row['sets'])
+                if set_number is None or not 1 <= set_number <= len(sets):
+                    raise ValueError('Немає підходу з таким номером.')
+                sets[set_number - 1]['note'] = note
+                changed = c.execute('UPDATE training_exercises SET sets=? WHERE exercise_id=?', (json.dumps(sets), record_id)).rowcount
+            else:
+                raise ValueError('Невідомий тип нотатки.')
+        if not changed:
+            raise ValueError('Запису з таким номером немає.')
 
 def get_custom_exercises(user_id):
     result = {'strength': [], 'cardio': []}

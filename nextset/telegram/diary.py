@@ -53,6 +53,7 @@ def norm(value):
 
 
 def quick_parse(text):
+    text, separator, note = text.partition(';')
     m = re.fullmatch(r'(.+?)\s+(?:(\d+)\s*[xх×]\s*)?(\d+)\s+(\d+(?:[.,]\d+)?)\s*(?:кг|kg)', text.strip(), re.I)
     if not m:
         return None
@@ -60,7 +61,8 @@ def quick_parse(text):
     count, reps, weight = int(count or 1), int(reps), float(weight.replace(',', '.'))
     if not 1 <= len(name) <= 80 or not 1 <= count <= 100 or not 1 <= reps <= 1000 or not 0 <= weight <= 1000:
         raise ValueError('Перевір значення: 1–100 підходів, 1–1000 повторень, 0–1000 кг.')
-    return {'name':name.strip(), 'type':'strength', 'sets':[{'weight':weight,'reps':reps} for _ in range(count)]}
+    from nextset.core.diary_entries import note_text
+    return {'name':name.strip(), 'type':'strength', 'sets':[{'weight':weight,'reps':reps} for _ in range(count)], 'details':note_text(note) if separator else ''}
 
 
 def parse_measurements(text):
@@ -91,7 +93,7 @@ def exercise_description(e):
     title = f'#{e["exercise_id"]} · {e["name"]}'
     if e.get('is_cardio'):
         return title + '\n' + e.get('details','')
-    return title + '\n' + '\n'.join(f'  {i}. {s["weight"]:g} кг × {s["reps"]} повт.' for i,s in enumerate(normalize_exercise_sets(e['sets']),1))
+    return title + ('\n📝 '+e['details'] if e.get('details') else '') + '\n' + '\n'.join(f'  {i}. {s["weight"]:g} кг × {s["reps"]} повт.' + (' — '+s['note'] if s.get('note') else '') for i,s in enumerate(normalize_exercise_sets(e['sets']),1))
 
 
 async def send_history(update, context, target=None, page=1):
@@ -107,6 +109,8 @@ async def send_history(update, context, target=None, page=1):
         status = 'завершено' if t['date_end'] else 'триває'
         text = f'📔 Тренування №{t["training_id"]} · {t["date_start"]} · {status}\n\n'
         text += '\n\n'.join(exercise_description(e) for e in t['exercises']) or 'Вправ ще немає.'
+        if t.get('comment'):text += '\n\n📝 Тренування: '+t['comment']
+        text += '\n\nНотатки: /note №вправи; текст · /setnote №вправи №підходу; текст · /trainingnote №тренування; текст'
         await send_chunks(update.message,text)
     if page*5 < len(trainings):
         await update.message.reply_text(f'Наступна сторінка: /history {page+1}' if not target else f'Показано 5 останніх тренувань цієї вправи. Повний перелік доступний через експорт.')
@@ -182,7 +186,13 @@ async def save_quick(update, context, e, prefix='quick'):
     db.add_custom_exercise(uid,e['name'],'strength')
     context.user_data['training_id'] = t['training_id']
     context.user_data['current_training'] = db.get_current_training(uid)
-    await update.message.reply_text('✅ Збережено: ' + e['name'] + '\n' + '\n'.join(f'{i}. {s["weight"]:g} кг × {s["reps"]} повт.' for i,s in enumerate(e['sets'],1)) + '\nПерегляд: /history')
+    saved=next((x for x in db.get_training_exercises(t['training_id']) if x.get('source_key')==e['source_key']),None)
+    if saved:
+        await send_chunks(update.message,'✅ Збережено:\n'+exercise_description(saved)+'\nПерегляд і редагування нотаток: /history')
+    else:
+        raise ValueError('Не вдалося зберегти запис. Відкрий поточне тренування й повтори.')
+    from nextset.telegram.notes import clarify_pain
+    await clarify_pain(update,'\n'.join([e.get('details','')]+[s.get('note','') for s in e['sets']]))
 
 
 async def extras(update, context):

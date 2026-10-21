@@ -24,20 +24,7 @@ def actual_sets(uid, state):
     return result
 
 
-def parse_sets(text):
-    lines = text.strip().splitlines()
-    if not 1 <= len(lines) <= 100:
-        raise ValueError('Введи 1–100 підходів, кожен окремим рядком: кг повторення.')
-    sets = []
-    for line in lines:
-        match = re.fullmatch(r'\s*(\d+(?:[.,]\d+)?)\s+(\d+)\s*', line)
-        if not match:
-            raise ValueError('Кожен рядок: кг повторення. Наприклад: 60 10')
-        weight, reps = float(match[1].replace(',', '.')), int(match[2])
-        if not 0 <= weight <= 1000 or not 1 <= reps <= 1000:
-            raise ValueError('Перевір значення: 0–1000 кг, 1–1000 повторень.')
-        sets.append(dict(weight=weight, reps=reps))
-    return sets
+from nextset.core.diary_entries import parse_sets
 
 
 async def route(update, context):
@@ -65,7 +52,7 @@ async def route(update, context):
     if not selecting and not finishing and not (active and not text.startswith('/')):
         return False
     # Other menu buttons remain navigable while an input is pending.
-    if active and not selecting and not finishing and any(text.startswith(x) for x in ('🗓', '📈', '👤', '⚙️', '🏋️', '📄', '✅')):
+    if active and not selecting and not finishing and any(text.startswith(x) for x in ('🗓', '📈', '👤', '⚙️', '🏋️', '📄', '✅', '📝')):
         db.set_setting(f'ui:{uid}', {})
         return False
     state = p.load(uid)
@@ -82,7 +69,7 @@ async def route(update, context):
         db.set_setting(f'ui:{uid}', dict(kind='plan_finish' if finishing else 'plan_sets',
                        key=key, plan=plan))
         prompt = ('Який найменший запас повторень був за сесію? Введи 0–5. Це завершить сесію за фактичними записами.'
-                  if finishing else f'{NAMES[key]}\nВведи фактично виконані підходи, кожен окремим рядком: кг повторення.\nНаприклад:\n60 10\n60 9\n55 10\nНові рядки додаються до записаних. Для вправ без додаткової ваги — 0 кг.')
+                  if finishing else f'{NAMES[key]}\nВведи фактично виконані підходи, кожен окремим рядком: кг повторення; необов’язкова нотатка.\nНаприклад:\n70x10; боліло коліно\n60 9; відмова\n55 10\nНові рядки додаються до записаних. Для вправ без додаткової ваги — 0 кг.')
         await update.message.reply_text(prompt, reply_markup=keyboard([['↩️ До сесії']]))
         return True
     if setting.get('plan') != plan:

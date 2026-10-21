@@ -17,6 +17,16 @@ Kilograms are shown only for today's matching main-session prescription in the a
 
 ## Record directly from a session
 
+### Optional notes
+
+In guided or planned set entry, append a semicolon and a note: `70x10; knee hurt` or `60 8; reached failure`. Here `70x10` means **70 kg for 10 repetitions**. Quick diary entries keep their existing notation: `Жим лежачи 3x10 70 кг; difficult today` means three sets and an exercise-level note. Notes are optional, up to 1,000 characters each. Text after the first semicolon is preserved, including leading spaces.
+
+Use **More → Notes** for help. `/history` shows exercise record IDs and training IDs. Add or replace notes with `/setnote 12 2; text` (set 2 of exercise record 12), `/note 12; text` (exercise), or `/trainingnote 5; text` (training). Leave the text after the semicolon empty to remove a note. These commands work for active and completed workouts and only for the owner's records.
+
+Notes survive reopening the database, finishing a workout, backups and exports. Excel has separate exercise and set-note columns and a training comment column; CSV includes all three scopes. Spreadsheet formula-like text is escaped on export. A note about pain prompts clarification; it does not automatically diagnose, change health status or replace `/status біль`. AI interpretation of all edited historical notes is not guaranteed by this feature.
+
+The diary is not yet declared fully accepted: final acceptance still requires the real Telegram walkthrough of arbitrary exercises/sets/loads, individual-set correction, restart/resume and exact history comparison. Automated note persistence/export checks do not replace that walkthrough.
+
 Open **My plan → Next session**, review and accept today's prescription. Each exercise now has a **✍️** button. Enter actual sets as one `kg repetitions` pair per line (for example `60 10` then `60 8`). Each submission appends actual sets; it does not copy prescribed values or replace previous entries. The session shows recorded sets beside each exercise. Use `/history` for full records and `/delete ID` to remove an incorrect exercise entry.
 
 Press **🏁 Завершити сесію** and enter the lowest repetitions in reserve, 0–5, to finish using the existing actual-diary completion checks. Logging does not require Qwen. Cancellation or an invalid/stale session never creates sets. A check mark means actual sets were recorded, not that every prescribed set was completed.

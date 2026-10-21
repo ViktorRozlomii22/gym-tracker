@@ -55,6 +55,11 @@ async def route(update, context):
         else:
             await home(update, context)
         return True
+    if active and text.startswith('/'):
+        # A command leaves this input flow. Otherwise a later numeric message
+        # can silently record sets after the user has navigated elsewhere.
+        db.set_setting(f'ui:{uid}', {})
+        return False
     selecting = text.startswith('✍️ ')
     finishing = text == '🏁 Завершити сесію'
     if not selecting and not finishing and not (active and not text.startswith('/')):

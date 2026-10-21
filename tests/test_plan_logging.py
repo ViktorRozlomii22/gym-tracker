@@ -70,3 +70,16 @@ class PlanLogging(unittest.IsolatedAsyncioTestCase):
         await self.send('/cancel')
         self.assertFalse(db.setting('ui:1'))
         self.assertIsNone(db.get_current_training(1))
+
+    async def test_command_navigation_clears_pending_set_or_finish_input(self):
+        for button in ('✍️ Жим лежачи', '🏁 Завершити сесію'):
+            for command in ('/history', '/help', '/plan', '/unknown'):
+                with self.subTest(button=button, command=command):
+                    await self.send(button)
+                    self.assertTrue(db.setting('ui:1'))
+                    self.assertFalse(await self.send(command))
+                    self.assertFalse(db.setting('ui:1'))
+                    self.assertFalse(await self.send('60 10'))
+                    self.assertFalse(await self.send('2'))
+                    self.assertIsNone(db.get_current_training(1))
+                    self.assertEqual(p.load(1)['cursor'], 0)

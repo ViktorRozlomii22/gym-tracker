@@ -197,7 +197,11 @@ def get_measurements_history(user_id, limit=10000):
 
 def delete_all_user_data(user_id):
     with connection() as c:
-        c.execute('DELETE FROM settings WHERE key=?',(f'coach:{user_id}',))
+        # Saved wizard input and AI results can contain profiles, plans and PRs.
+        # Delete exact user keys; prefix matching could also erase user 12 when
+        # clearing user 1. Host ownership and backup settings must survive.
+        c.executemany('DELETE FROM settings WHERE key=?',
+                      [(f'{prefix}:{user_id}',) for prefix in ('coach', 'ui', 'ai-job')])
         for table in ('trainings','custom_exercises','user_hidden_defaults','user_measurements'):
             c.execute(f'DELETE FROM {table} WHERE user_id=?', (user_id,))
     return True

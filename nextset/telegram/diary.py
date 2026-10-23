@@ -256,7 +256,7 @@ async def extras(update, context):
             days = int(arg)
             if not 0 <= days <= 365:
                 raise ValueError('Вкажи 0–365 днів; 0 вимикає нагадування.')
-            db.set_setting('reminder_days',days)
+            db.set_setting(f'reminder-days:{update.effective_user.id}',days)
             await update.message.reply_text(f'Нагадування: після {days} днів без запису вправи, о 18:00 за часом ПК.' if days else 'Нагадування вимкнено.')
         elif cmd == '/ai':
             from nextset.storage.access import require_ai
@@ -290,14 +290,25 @@ async def extras(update, context):
 
 
 async def reminder_job(context):
-    uid = db.setting('owner')
+    from nextset.storage.access import recipients
+    import logging
+    for uid in recipients():
+        try:
+            await reminder_for(context,uid)
+        except Exception as error:
+            logging.warning('Reminder delivery failed: %s',type(error).__name__)
+
+
+async def reminder_for(context,uid):
     if uid:
         from nextset.coaching.programs import load
         if load(uid)['health'] in ('sick','pain'):
             return
-    days = db.setting('reminder_days',0)
+    legacy_days=db.setting('reminder_days',0) if uid==db.setting('owner') else 0
+    days = db.setting(f'reminder-days:{uid}',legacy_days)
     now = datetime.now()
-    if not uid or not days or now.hour < 18 or db.setting('last_reminder') == now.date().isoformat():
+    legacy_last=db.setting('last_reminder') if uid==db.setting('owner') else None
+    if not uid or not days or now.hour < 18 or db.setting(f'last-reminder:{uid}',legacy_last) == now.date().isoformat():
         return
     last = {}
     for t in db.get_user_trainings(uid,limit=100000,include_active=True):
@@ -309,4 +320,4 @@ async def reminder_job(context):
         text = '🔔 Давно не було записів:\n' + '\n'.join(f'• {n}: {age} днів' for n,age in due) + '\nВимкнути: /remind 0'
         for start in range(0,len(text),3800):
             await context.bot.send_message(uid,text[start:start+3800])
-    db.set_setting('last_reminder',now.date().isoformat())
+    db.set_setting(f'last-reminder:{uid}',now.date().isoformat())

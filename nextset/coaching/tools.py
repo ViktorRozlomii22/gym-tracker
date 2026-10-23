@@ -236,10 +236,14 @@ async def handle(update,context,cmd,arg,state,now):
         state['weekly_enabled']=arg=='on'
         return 'Автозвіт увімкнено: неділя 18:00 за часом ПК.' if arg=='on' else 'Автозвіт вимкнено.',True
     if cmd=='/backup':
+        from nextset.storage.access import require_admin
+        require_admin(update.effective_user.id)
         from nextset.storage.backups import create_backup
         path=await asyncio.to_thread(create_backup)
         return '💾 Локальна копія: '+path.name+'\nПапка data/backups. Для іншого ПК скопіюй архів. Відновлення: RESTORE.cmd при зупиненому боті. Токен не входить до копії.',False
     if cmd=='/backups':
+        from nextset.storage.access import require_admin
+        require_admin(update.effective_user.id)
         from nextset.storage.backups import list_backups
         paths=list_backups()
         return '💾 Локальні копії:\n'+('\n'.join(x.name for x in paths[:14]) or 'Ще немає. /backup'),False

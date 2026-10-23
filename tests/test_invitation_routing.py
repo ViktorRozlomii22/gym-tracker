@@ -46,3 +46,12 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):await begin(self.update(2,'/ask hello'),None,'/ask','hello')
         await guard(self.update(2,'/history'),None)
         await guard(self.update(1,'/ask hello'),None)
+
+    async def test_members_cannot_create_or_list_host_backups(self):
+        from datetime import datetime
+        from nextset.coaching.tools import handle
+        from unittest.mock import patch
+        for command in ('/backup','/backups'):
+            with patch('nextset.storage.backups.create_backup',side_effect=AssertionError('must not run')):
+                with self.assertRaises(ValueError):
+                    await handle(self.update(2,command),None,command,'',{},datetime.now())

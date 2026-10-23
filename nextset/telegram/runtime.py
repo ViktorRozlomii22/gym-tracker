@@ -33,6 +33,13 @@ async def guard(update,context):
             return
         raise ApplicationHandlerStop
     if owner != update.effective_user.id:
+        from nextset.storage.access import allowed, redeem
+        if allowed(update.effective_user.id):
+            return
+        text=update.message.text or ''
+        if text.startswith('/start invite_') and redeem(update.effective_user.id,text.removeprefix('/start invite_').strip()):
+            return
+        await update.message.reply_text('Доступ лише за запрошенням адміністратора. Посилання могло спливти, бути використане або доступ призупинено.')
         raise ApplicationHandlerStop
 
 

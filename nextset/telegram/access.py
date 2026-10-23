@@ -1,0 +1,46 @@
+"""Admin controls and invitation admission; ordinary users never see host state."""
+import re
+from nextset.storage import access
+from nextset.telegram.diary import send_chunks
+
+HELP = ('👥 Учасники\n/invite — одноразове запрошення на 7 днів\n'
+        '/members — учасники та їхні Telegram ID\n/revokeinvite номер — скасувати невикористане запрошення\n'
+        '/blockuser ID — призупинити доступ\n/unblockuser ID — повернути доступ\n'
+        'ШІ доступний лише адміністратору. Оплата не підключена.')
+
+
+async def route(update, context):
+    text = update.message.text.strip()
+    match = re.fullmatch(r'/(invite|members|revokeinvite|blockuser|unblockuser)(?:@\w+)?(?:\s+(.*))?', text)
+    if text != '👥 Учасники' and not match:
+        return False
+    uid = update.effective_user.id
+    try:
+        access.require_admin(uid)
+        if not match:
+            await update.message.reply_text(HELP)
+            return True
+        command, arg = match.groups()
+        if command == 'invite':
+            if arg:
+                raise ValueError('Надішли /invite без аргументів.')
+            # Resolve username before creating an invitation, so network failure
+            # cannot leave an unreachable secret in the database.
+            bot = await context.bot.get_me()
+            identifier, token = access.create_invite(uid)
+            await update.message.reply_text(f'Запрошення №{identifier} · одноразове · 7 днів\nhttps://t.me/{bot.username}?start=invite_{token}\nСкасувати: /revokeinvite {identifier}\nНадішли посилання потрібній людині. ШІ їй не надається.')
+        elif command == 'members':
+            rows = access.list_members(uid)
+            await send_chunks(update.message,'👥 Учасники\n'+'\n'.join(f'{row["user_id"]} — '+('активний' if row['active'] else 'доступ призупинено') for row in rows) if rows else 'Запрошених учасників ще немає. /invite')
+        else:
+            if not arg or not arg.isdecimal() or int(arg) < 1:
+                raise ValueError('Потрібен додатний цілий номер.\n'+HELP)
+            if command == 'revokeinvite':
+                changed = access.revoke_invite(uid,int(arg))
+                await update.message.reply_text('Запрошення скасовано.' if changed else 'Активного невикористаного запрошення з таким номером немає.')
+            else:
+                access.set_active(uid,int(arg),command == 'unblockuser')
+                await update.message.reply_text('Доступ повернуто.' if command == 'unblockuser' else 'Доступ призупинено. Особисті записи збережено.')
+    except ValueError as error:
+        await update.message.reply_text(str(error))
+    return True

@@ -120,6 +120,8 @@ async def deliver(update,context,command,messages):
 
 async def route(update,context):
     import nextset.coaching.programs as p
+    from nextset.telegram.access import route as access_route
+    if await access_route(update,context):return True
     from nextset.telegram.plan_logging import route as logging_route
     if await logging_route(update,context):return True
     from nextset.telegram.notes import route as notes_route

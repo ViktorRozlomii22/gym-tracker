@@ -146,8 +146,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 Вибери дію:
     """
     
-    from nextset.telegram.ui import HOME
-    keyboard = HOME
+    from nextset.telegram.ui import home_rows
+    keyboard = home_rows(user_id)
     
     await update.message.reply_text(
         welcome_text,

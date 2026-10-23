@@ -149,6 +149,7 @@ class Tests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(db.delete_exercise_record(42,eid))
 
     async def test_ai_proposal_never_saves_without_confirmation(self):
+        db.set_setting('owner',42)
         proposed=diary.quick_parse('Жим лежачи 3x10 60 кг')
         self.msg.text='/ai сьогодні жим 3 по 10 на 60 кг'
         with patch('nextset.ai.parser.propose',return_value=proposed):

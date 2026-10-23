@@ -13,12 +13,14 @@ FIELDS=[('вік','Скільки тобі років?'),('зріст','Твій
 
 def keyboard(rows):return ReplyKeyboardMarkup(rows,resize_keyboard=True)
 
-async def home(update,context):
+def home_rows(uid):
     from nextset.storage.access import is_admin
-    rows=HOME if is_admin(update.effective_user.id) else [
+    return HOME if is_admin(uid) else [
         ['💪 Почати тренування'],['📈 Мій прогрес','📊 Історія тренувань'],
         ['📏 Мої виміри','⚙️ Ще']]
-    await update.message.reply_text('Що робимо сьогодні?',reply_markup=keyboard(rows))
+
+async def home(update,context):
+    await update.message.reply_text('Що робимо сьогодні?',reply_markup=keyboard(home_rows(update.effective_user.id)))
 
 async def setup(update,context):
     import nextset.coaching.programs as p

@@ -161,6 +161,7 @@ class Routing(unittest.IsolatedAsyncioTestCase):
         from telegram.ext import ApplicationHandlerStop
         with tempfile.TemporaryDirectory() as tmp, patch.object(db,'DB_PATH',Path(tmp)/'test.db'):
             db.ensure_bot_schema()
+            db.set_setting('owner',1)
             message=SimpleNamespace(message_id=0,text='',reply_text=AsyncMock())
             update=SimpleNamespace(message=message,effective_user=SimpleNamespace(id=1))
             context=SimpleNamespace(user_data={})

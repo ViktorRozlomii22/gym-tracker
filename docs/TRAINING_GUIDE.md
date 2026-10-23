@@ -1,5 +1,7 @@
 # Training tools
 
+For invitation membership, administrator controls and AI permissions, see [Shared bot](SHARED_BOT.md). AI is currently restricted to the paired owner; invited members can use their own diary, notes, measurements, graphs and exports.
+
 The bot speaks Ukrainian. These instructions are in English. Diary, check-in, feedback, reports and backups work without Qwen. Generating blocks, sessions, substitutions and explanations requires local Ollama.
 
 ## A normal training day

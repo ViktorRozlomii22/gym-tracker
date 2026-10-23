@@ -1,7 +1,7 @@
 [project]
 name = "nextset-ua"
-version = "1.2.3"
-description = "A private Ukrainian-language Telegram training diary for Windows"
+version = "1.3.0"
+description = "An invitation-only Ukrainian Telegram training diary for Windows"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 license = "Apache-2.0 AND MIT"

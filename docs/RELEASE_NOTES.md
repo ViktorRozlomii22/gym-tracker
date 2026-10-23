@@ -1,3 +1,12 @@
+## NextSet UA 1.3.0
+
+- Invitation-only membership: single-use seven-day links, revocation, member list and suspension/restoration.
+- Existing paired owner remains administrator. AI is restricted to that account; payment integration is not enabled.
+- Individual diary data, note edits, exports, reminders and weekly reports. Host backup controls require administrator permission.
+- Role-specific menus and an account information command.
+- Clear-data requests invalidate pending inference and clear personal reminder preferences without resetting membership.
+- 124 automated tests pass, including concurrent invitations and cross-account isolation. Real two-account Telegram acceptance remains required.
+
 ## NextSet UA 1.2.3
 
 - Optional set, exercise and workout notes, with owner-scoped edit/delete commands and history display.

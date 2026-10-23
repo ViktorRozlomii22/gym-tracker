@@ -155,9 +155,19 @@ def weekly_text(data):
     return '\n'.join(lines)
 
 async def weekly_job(context):
+    from nextset.storage.access import recipients
+    import logging
+    for uid in recipients():
+        try:
+            await weekly_for(context,uid)
+        except Exception as error:
+            logging.warning('Weekly report delivery failed: %s',type(error).__name__)
+
+
+async def weekly_for(context,uid):
     from nextset.coaching.programs import load, save
     from nextset.telegram.diary import send_chunks
-    now=datetime.now(); uid=db.setting('owner')
+    now=datetime.now()
     if not uid or now.weekday()!=6 or now.hour<18:
         return
     state=load(uid)

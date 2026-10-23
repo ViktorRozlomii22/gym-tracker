@@ -32,3 +32,19 @@ class SharedReminders(Access,unittest.IsolatedAsyncioTestCase):
         self.assertEqual(db.setting('last-reminder:2'),'2026-10-23')
         access.set_active(1,2,False)
         self.assertNotIn(2,access.recipients())
+
+    async def test_weekly_opt_in_and_delivery_are_independent(self):
+        from nextset.coaching import tools,programs
+        _,token=access.create_invite(1)
+        access.redeem(2,token)
+        for uid in (1,2):
+            state=programs.load(uid)
+            state['weekly_enabled']=True
+            programs.save(uid,state)
+        bot=SimpleNamespace(send_message=AsyncMock(side_effect=[RuntimeError('delivery'),None]))
+        with patch.object(tools,'datetime') as clock,patch.object(tools,'weekly_data',side_effect=lambda uid,now:{'uid':uid}),patch.object(tools,'weekly_text',side_effect=lambda data:f"Report {data['uid']}"):
+            clock.now.return_value=datetime(2026,10,25,19)
+            await tools.weekly_job(SimpleNamespace(bot=bot))
+        self.assertEqual([call.args for call in bot.send_message.call_args_list],[(1,'Report 1'),(2,'Report 2')])
+        self.assertNotIn('last_weekly',programs.load(1))
+        self.assertEqual(programs.load(2)['last_weekly'],'2026-10-25')

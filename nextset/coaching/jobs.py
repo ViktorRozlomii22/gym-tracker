@@ -51,6 +51,8 @@ class Buffer:
 async def begin(update,context,command,arg):
     import nextset.coaching.programs as p
     uid=update.effective_user.id
+    from nextset.storage.access import require_ai
+    require_ai(uid)
     active=context.application.bot_data.get('training_ai_job')
     if active and not active['task'].done():
         if active['uid']==uid:

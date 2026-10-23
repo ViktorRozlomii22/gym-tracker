@@ -8,6 +8,20 @@ HELP = ('👥 Учасники\n/invite — одноразове запроше�
         '/blockuser ID — призупинити доступ\n/unblockuser ID — повернути доступ\n'
         'ШІ доступний лише адміністратору. Оплата не підключена.')
 
+AI_COMMANDS = {'plan','block','extra','swap','ask','coach','coachconfirm','weeklyai',
+               'ai','confirm','aistatus','airesult','aicancel','planconfirm','blockconfirm','swapconfirm'}
+AI_BUTTONS = {'✨ Створити 8 тижнів','🏋️ Наступна сесія','📋 Мій план',
+              '🧠 Стан ШІ','🛑 Скасувати ШІ','✅ Прийняти сесію','✅ Прийняти блок'}
+
+
+async def allow_member_action(update):
+    text = (update.message.text or '').strip()
+    command = re.match(r'^/(\w+)(?:@\w+)?(?:\s|:|$)', text)
+    if text in AI_BUTTONS or command and command[1].lower() in AI_COMMANDS:
+        await update.message.reply_text('ШІ зараз доступний лише адміністратору. Ти можеш вести щоденник, додавати нотатки та виміри й переглядати власні графіки.')
+        return False
+    return True
+
 
 async def route(update, context):
     text = update.message.text.strip()

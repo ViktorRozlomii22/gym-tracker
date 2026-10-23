@@ -21,6 +21,7 @@ class Friendly(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.old=db.DB_PATH
         db.DB_PATH=Path(self.tmp.name)/'test.db';db.ensure_bot_schema()
+        db.set_setting('owner',1)
         self.addCleanup(self.tmp.cleanup);self.addCleanup(setattr,db,'DB_PATH',self.old)
         self.message=SimpleNamespace(message_id=73,text='',reply_text=AsyncMock(),reply_photo=AsyncMock())
         self.update=SimpleNamespace(message=self.message,effective_user=SimpleNamespace(id=1))

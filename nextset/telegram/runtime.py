@@ -35,6 +35,9 @@ async def guard(update,context):
     if owner != update.effective_user.id:
         from nextset.storage.access import allowed, redeem
         if allowed(update.effective_user.id):
+            from nextset.telegram.access import allow_member_action
+            if not await allow_member_action(update):
+                raise ApplicationHandlerStop
             return
         text=update.message.text or ''
         if text.startswith('/start invite_') and redeem(update.effective_user.id,text.removeprefix('/start invite_').strip()):

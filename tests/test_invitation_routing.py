@@ -34,3 +34,15 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
         self.assertTrue(await route(update,context))
         self.assertIn('лише адміністратору',update.message.reply_text.call_args.args[0])
         self.assertEqual(context.bot.get_me.await_count,1)
+
+    async def test_member_cannot_bypass_ai_restriction_with_commands_or_buttons(self):
+        from nextset.telegram.access import AI_COMMANDS,AI_BUTTONS
+        from nextset.coaching.jobs import begin
+        _,token=access.create_invite(1)
+        access.redeem(2,token)
+        for text in [f'/{cmd}@test_bot: details' for cmd in AI_COMMANDS]+list(AI_BUTTONS):
+            with self.subTest(text=text),self.assertRaises(ApplicationHandlerStop):
+                await guard(self.update(2,text),None)
+        with self.assertRaises(ValueError):await begin(self.update(2,'/ask hello'),None,'/ask','hello')
+        await guard(self.update(2,'/history'),None)
+        await guard(self.update(1,'/ask hello'),None)

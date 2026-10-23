@@ -259,6 +259,8 @@ async def extras(update, context):
             db.set_setting('reminder_days',days)
             await update.message.reply_text(f'Нагадування: після {days} днів без запису вправи, о 18:00 за часом ПК.' if days else 'Нагадування вимкнено.')
         elif cmd == '/ai':
+            from nextset.storage.access import require_ai
+            require_ai(update.effective_user.id)
             from nextset.ai.parser import propose
             if not arg:
                 raise ValueError('Приклад: /ai сьогодні жим лежачи 3 по 10 на 60 кг')

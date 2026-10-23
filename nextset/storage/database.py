@@ -42,6 +42,8 @@ def ensure_bot_schema():
           measurement_date TEXT NOT NULL, measurements TEXT NOT NULL, source_key TEXT UNIQUE);
         CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL);
         ''')
+        from nextset.storage.access import ensure_schema
+        ensure_schema(c)
 
 def setting(key, default=None):
     with connection() as c:

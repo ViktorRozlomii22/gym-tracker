@@ -117,6 +117,11 @@ class Friendly(unittest.IsolatedAsyncioTestCase):
         before=ai_jobs.inputs(1,p.load(1));db.create_training(1)
         self.assertNotEqual(before,ai_jobs.inputs(1,p.load(1)))
 
+    async def test_deletion_invalidates_running_inference_even_for_empty_diary(self):
+        await self.run_job(lambda:db.delete_all_user_data(1))
+        self.assertIsNone(p.load(1)['program'])
+        self.assertEqual(db.setting('ai-job:1')['status'],'stale')
+
     async def test_delivery_failure_keeps_saved_result_recoverable(self):
         await self.run_job(delivery_error=True)
         saved=db.setting('ai-job:1')

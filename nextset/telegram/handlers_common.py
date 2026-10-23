@@ -249,6 +249,10 @@ async def handle_clear_data_confirmation(update: Update, context: ContextTypes.D
         success = delete_all_user_data(user_id)
         
         if success:
+            context.user_data.clear()
+            job=context.application.bot_data.get('training_ai_job')
+            if job and job['uid']==user_id:
+                job['cancel']=True
             await update.message.reply_text(
                 "✅ Усі твої дані видалено!",
                 reply_markup=ReplyKeyboardRemove()

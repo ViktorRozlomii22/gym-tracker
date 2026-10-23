@@ -19,6 +19,7 @@ def fingerprint(state):
 
 def inputs(uid,state):
     return fingerprint({'coach':{k:v for k,v in state.items() if k!='events'},
+        'data_epoch':db.setting(f'data-epoch:{uid}',0),
         'diary':db.get_user_trainings(uid,limit=100000,include_active=True),
         'measurements':db.get_measurements_history(uid,limit=3)})
 

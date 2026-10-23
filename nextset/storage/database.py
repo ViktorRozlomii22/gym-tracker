@@ -203,7 +203,16 @@ def delete_all_user_data(user_id):
         # Delete exact user keys; prefix matching could also erase user 12 when
         # clearing user 1. Host ownership and backup settings must survive.
         c.executemany('DELETE FROM settings WHERE key=?',
-                      [(f'{prefix}:{user_id}',) for prefix in ('coach', 'ui', 'ai-job')])
+                      [(f'{prefix}:{user_id}',) for prefix in ('coach', 'ui', 'ai-job', 'reminder-days', 'last-reminder')])
+        # Invalidate inference started before deletion, even if the diary was
+        # already empty. Membership is retained so deletion does not unban users.
+        key=f'data-epoch:{user_id}'
+        row=c.execute('SELECT value FROM settings WHERE key=?',(key,)).fetchone()
+        epoch=json.loads(row[0]) if row else 0
+        c.execute('INSERT OR REPLACE INTO settings VALUES (?,?)',(key,json.dumps(epoch+1)))
+        owner=c.execute('SELECT value FROM settings WHERE key=?',('owner',)).fetchone()
+        if owner and json.loads(owner[0])==user_id:
+            c.execute("DELETE FROM settings WHERE key IN ('reminder_days','last_reminder')")
         for table in ('trainings','custom_exercises','user_hidden_defaults','user_measurements'):
             c.execute(f'DELETE FROM {table} WHERE user_id=?', (user_id,))
     return True

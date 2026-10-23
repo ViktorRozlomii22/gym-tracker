@@ -25,6 +25,10 @@ async def allow_member_action(update):
 
 async def route(update, context):
     text = update.message.text.strip()
+    if text.split('@')[0]=='/account':
+        admin=access.is_admin(update.effective_user.id)
+        await update.message.reply_text(f'Твій Telegram ID: {update.effective_user.id}\nРоль: '+('адміністратор' if admin else 'запрошений учасник')+'\nШІ: '+('доступний' if admin else 'зараз лише для адміністратора')+'\nТренування, нотатки, виміри й експорт належать твоєму акаунту.')
+        return True
     match = re.fullmatch(r'/(invite|members|revokeinvite|blockuser|unblockuser)(?:@\w+)?(?:\s+(.*))?', text)
     if text != '👥 Учасники' and not match:
         return False

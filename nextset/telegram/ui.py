@@ -14,7 +14,11 @@ FIELDS=[('вік','Скільки тобі років?'),('зріст','Твій
 def keyboard(rows):return ReplyKeyboardMarkup(rows,resize_keyboard=True)
 
 async def home(update,context):
-    await update.message.reply_text('Що робимо сьогодні?',reply_markup=keyboard(HOME))
+    from nextset.storage.access import is_admin
+    rows=HOME if is_admin(update.effective_user.id) else [
+        ['💪 Почати тренування'],['📈 Мій прогрес','📊 Історія тренувань'],
+        ['📏 Мої виміри','⚙️ Ще']]
+    await update.message.reply_text('Що робимо сьогодні?',reply_markup=keyboard(rows))
 
 async def setup(update,context):
     import nextset.coaching.programs as p
@@ -156,10 +160,16 @@ async def route(update,context):
         from nextset.telegram.diary import show_graph
         await show_graph(update,context,text.split()[1]);return True
     if text=='⚙️ Ще':
+        from nextset.storage.access import is_admin
+        if not is_admin(uid):
+            await update.message.reply_text('Твій щоденник\n/remind 10 — нагадувати після 10 днів без записів\n/remind 0 — вимкнути\n/weeklyremind on або off — тижневий звіт\n/account — мій доступ',reply_markup=keyboard([
+                ['📆 Звіт за тиждень','📝 Нотатки'],['📤 Експорт даних','📝 Мої вправи'],
+                ['📊 Історія тренувань','📏 Мої виміри'],['❓ Довідка','🔙 Головне меню']]))
+            return True
         await update.message.reply_text('Додаткові можливості. Усі команди також доступні через /help і /coachhelp.',reply_markup=keyboard([
             ['🧭 Усі методи','✅ Перед тренуванням'],['📆 Звіт за тиждень','💾 Резервна копія'],
             ['🧠 Стан ШІ','🛑 Скасувати ШІ'],['📏 Мої виміри','📤 Експорт даних'],
-            ['📝 Мої вправи','📊 Історія тренувань'],['📝 Нотатки'],['❓ Довідка','🔙 Головне меню']]))
+            ['📝 Мої вправи','📊 Історія тренувань'],['📝 Нотатки','👥 Учасники'],['❓ Довідка','🔙 Головне меню']]))
         return True
     aliases={'✨ Створити 8 тижнів':('/block','8'),'✅ Прийняти блок':('/blockconfirm',''),
         '❌ Відхилити блок':('/blockreject',''),'✅ Прийняти сесію':('/planconfirm',''),

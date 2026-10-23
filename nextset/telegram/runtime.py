@@ -3,7 +3,7 @@ import os
 import secrets
 from pathlib import Path
 from dotenv import load_dotenv
-from telegram import BotCommand, Update
+from telegram import BotCommand, BotCommandScopeChat, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, ConversationHandler, ApplicationHandlerStop, filters
 import nextset.storage.database as db
 import nextset.telegram.handlers_common as common
@@ -76,8 +76,11 @@ async def ready(app):
     info = await app.bot.get_webhook_info()
     if info.url:
         raise RuntimeError('Для цього бота вже налаштовано webhook. Спершу вимкни інший запуск.')
-    from nextset.telegram.commands import BOT_COMMANDS
-    await app.bot.set_my_commands([BotCommand(*item) for item in BOT_COMMANDS])
+    from nextset.telegram.commands import MEMBER_COMMANDS,ADMIN_COMMANDS
+    await app.bot.set_my_commands([BotCommand(*item) for item in MEMBER_COMMANDS])
+    owner=db.setting('owner')
+    if owner is not None:
+        await app.bot.set_my_commands([BotCommand(*item) for item in ADMIN_COMMANDS],scope=BotCommandScopeChat(owner))
     await app.bot.set_my_description('Твій особистий щоденник тренувань: вправи, підходи, повторення, вага, виміри тіла та графіки прогресу. Українською.')
     await app.bot.set_my_short_description('Щоденник тренувань українською · вправи, повторення, кг та прогрес')
     await app.bot.set_my_name('Щоденник тренувань')

@@ -55,3 +55,14 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
             with patch('nextset.storage.backups.create_backup',side_effect=AssertionError('must not run')):
                 with self.assertRaises(ValueError):
                     await handle(self.update(2,command),None,command,'',{},datetime.now())
+
+    async def test_member_home_and_account_do_not_offer_admin_or_ai_actions(self):
+        from nextset.telegram.ui import home
+        update=self.update(2,'/account')
+        await route(update,None)
+        self.assertIn('Telegram ID: 2',update.message.reply_text.call_args.args[0])
+        await home(update,None)
+        markup=str(update.message.reply_text.call_args.kwargs['reply_markup'])
+        self.assertNotIn('Мій план',markup)
+        self.assertNotIn('Учасники',markup)
+        self.assertIn('Мій прогрес',markup)

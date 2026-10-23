@@ -53,7 +53,13 @@ async def begin(update,context,command,arg):
     uid=update.effective_user.id
     active=context.application.bot_data.get('training_ai_job')
     if active and not active['task'].done():
-        await update.message.reply_text('ШІ вже зайнятий одним запитом. Меню, записи й графіки доступні.\n'+status(active['uid'])+'\nСтатус: /aistatus · скасувати: /aicancel')
+        if active['uid']==uid:
+            message='ШІ вже зайнятий твоїм запитом. Меню, записи й графіки доступні.\n'+status(uid)+'\nСтатус: /aistatus · скасувати: /aicancel'
+        else:
+            # The shared inference slot must not expose another user's error,
+            # elapsed time or persisted job state to the requesting account.
+            message='Локальний ШІ зараз зайнятий. Спробуй пізніше. Меню, записи й графіки доступні.'
+        await update.message.reply_text(message)
         return
     state=p.load(uid)
     if command=='/block':

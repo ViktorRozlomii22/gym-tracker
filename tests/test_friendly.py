@@ -87,6 +87,27 @@ class Friendly(unittest.IsolatedAsyncioTestCase):
             await self.context.application.bot_data['training_ai_job']['task']
         return deliver
 
+    async def test_shared_ai_busy_does_not_read_other_users_status(self):
+        task=SimpleNamespace(done=lambda:False)
+        self.context.application.bot_data['training_ai_job']={'uid':2,'task':task}
+        with patch.object(ai_jobs,'status',side_effect=AssertionError('foreign state read')):
+            await ai_jobs.begin(self.update,self.context,'/ask','питання')
+        text=self.message.reply_text.call_args.args[0]
+        self.assertIn('зараз зайнятий',text)
+        self.assertNotIn('/aicancel',text)
+        self.assertIsNone(db.setting('ai-job:1'))
+        self.assertIsNone(p.load(1)['program'])
+
+    async def test_own_busy_request_keeps_status_and_cancellation_help(self):
+        task=SimpleNamespace(done=lambda:False)
+        self.context.application.bot_data['training_ai_job']={'uid':1,'task':task}
+        with patch.object(ai_jobs,'status',return_value='Власний стан') as status:
+            await ai_jobs.begin(self.update,self.context,'/ask','питання')
+        status.assert_called_once_with(1)
+        text=self.message.reply_text.call_args.args[0]
+        self.assertIn('Власний стан',text)
+        self.assertIn('/aicancel',text)
+
     async def test_stale_profile_or_diary_prevents_application(self):
         def change():
             state=p.load(1);state['health']='sick';db.set_setting('coach:1',state)

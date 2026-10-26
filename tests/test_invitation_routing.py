@@ -66,3 +66,16 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('Мій план',markup)
         self.assertNotIn('Учасники',markup)
         self.assertIn('Мій прогрес',markup)
+
+    async def test_failed_invitation_delivery_revokes_only_new_unused_link(self):
+        import nextset.storage.database as db
+        _,existing=access.create_invite(1)
+        context=SimpleNamespace(bot=SimpleNamespace(get_me=AsyncMock(return_value=SimpleNamespace(username='test_bot'))))
+        update=self.update(1,'/invite')
+        update.message.reply_text.side_effect=RuntimeError('delivery failed')
+        with self.assertRaises(RuntimeError):
+            await route(update,context)
+        with db.connection() as connection:
+            rows=connection.execute('SELECT revoked FROM invitations ORDER BY id').fetchall()
+        self.assertEqual([row['revoked'] for row in rows],[0,1])
+        self.assertTrue(access.redeem(2,existing))

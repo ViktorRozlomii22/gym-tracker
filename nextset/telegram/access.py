@@ -46,7 +46,12 @@ async def route(update, context):
             # cannot leave an unreachable secret in the database.
             bot = await context.bot.get_me()
             identifier, token = access.create_invite(uid)
-            await update.message.reply_text(f'Запрошення №{identifier} · одноразове · 7 днів\nhttps://t.me/{bot.username}?start=invite_{token}\nСкасувати: /revokeinvite {identifier}\nНадішли посилання потрібній людині. ШІ їй не надається.')
+            try:
+                await update.message.reply_text(f'Запрошення №{identifier} · одноразове · 7 днів\nhttps://t.me/{bot.username}?start=invite_{token}\nСкасувати: /revokeinvite {identifier}\nНадішли посилання потрібній людині. ШІ їй не надається.')
+            except Exception:
+                # Even an uncertain delivery must not leave an unmanaged live link.
+                access.revoke_invite(uid,identifier)
+                raise
         elif command == 'members':
             rows = access.list_members(uid)
             await send_chunks(update.message,'👥 Учасники\n'+'\n'.join(f'{row["user_id"]} — '+('активний' if row['active'] else 'доступ призупинено') for row in rows) if rows else 'Запрошених учасників ще немає. /invite')

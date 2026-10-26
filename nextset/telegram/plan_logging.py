@@ -52,7 +52,7 @@ async def route(update, context):
     if not selecting and not finishing and not (active and not text.startswith('/')):
         return False
     # Other menu buttons remain navigable while an input is pending.
-    if active and not selecting and not finishing and any(text.startswith(x) for x in ('🗓', '📈', '👤', '⚙️', '🏋️', '📄', '✅', '📝')):
+    if active and not selecting and not finishing and any(text.startswith(x) for x in ('🗓', '📈', '👤', '⚙️', '🏋️', '📄', '✅', '📝', '👥')):
         db.set_setting(f'ui:{uid}', {})
         return False
     state = p.load(uid)

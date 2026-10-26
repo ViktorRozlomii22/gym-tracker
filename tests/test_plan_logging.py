@@ -83,3 +83,18 @@ class PlanLogging(unittest.IsolatedAsyncioTestCase):
                     self.assertFalse(await self.send('2'))
                     self.assertIsNone(db.get_current_training(1))
                     self.assertEqual(p.load(1)['cursor'], 0)
+
+    async def test_account_navigation_exits_pending_input_in_full_ui_router(self):
+        from nextset.telegram import ui
+        db.set_setting('owner',1)
+        for button in ('✍️ Жим лежачи','🏁 Завершити сесію'):
+            for destination in ('/account','/members','👥 Учасники'):
+                with self.subTest(button=button,destination=destination):
+                    await self.send(button)
+                    self.message.text=destination
+                    self.assertTrue(await ui.route(self.update,self.context))
+                    self.assertFalse(db.setting('ui:1'))
+                    self.assertFalse(await self.send('60 10'))
+                    self.assertFalse(await self.send('2'))
+                    self.assertIsNone(db.get_current_training(1))
+                    self.assertEqual(p.load(1)['cursor'],0)

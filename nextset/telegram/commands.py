@@ -34,6 +34,6 @@ MEMBER_COMMANDS=tuple(item for item in BOT_COMMANDS if item[0] in {
     ('account','Мій доступ і Telegram ID'),('note','Нотатка до вправи'),
     ('setnote','Нотатка до підходу'),('trainingnote','Нотатка до тренування'))
 ADMIN_COMMANDS=BOT_COMMANDS + (
-    ('invite','Створити одноразове запрошення'),('members','Учасники бота'),
+    ('invite','Створити одноразове запрошення'),('invites','Активні невикористані запрошення'),('members','Учасники бота'),
     ('revokeinvite','Скасувати запрошення'),('blockuser','Призупинити доступ'),
     ('unblockuser','Повернути доступ'),('account','Мій доступ і Telegram ID'))

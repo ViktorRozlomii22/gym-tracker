@@ -79,3 +79,19 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
             rows=connection.execute('SELECT revoked FROM invitations ORDER BY id').fetchall()
         self.assertEqual([row['revoked'] for row in rows],[0,1])
         self.assertTrue(access.redeem(2,existing))
+
+    async def test_invites_command_lists_metadata_only_and_is_admin_only(self):
+        identifier,token=access.create_invite(1)
+        update=self.update(1,'/invites')
+        self.assertTrue(await route(update,None))
+        message=update.message.reply_text.call_args.args[0]
+        self.assertIn(f'№{identifier}',message)
+        self.assertNotIn(token,message)
+        self.assertNotIn('invite_',message)
+        update=self.update(2,'/invites')
+        self.assertTrue(await route(update,None))
+        self.assertIn('лише адміністратору',update.message.reply_text.call_args.args[0])
+        access.revoke_invite(1,identifier)
+        update=self.update(1,'/invites')
+        await route(update,None)
+        self.assertIn('немає',update.message.reply_text.call_args.args[0])

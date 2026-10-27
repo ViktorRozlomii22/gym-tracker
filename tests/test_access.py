@@ -45,3 +45,17 @@ class Access(unittest.TestCase):
         access.set_active(1,2,True)
         self.assertEqual(access.recipients(),[1,2])
         with self.assertRaises(ValueError):access.set_active(1,1,False)
+
+    def test_pending_invitation_list_excludes_expired_used_revoked_and_secrets(self):
+        now=datetime(2026,10,27,tzinfo=timezone.utc)
+        pending,token=access.create_invite(1,now)
+        access.create_invite(1,now-timedelta(days=7))
+        used,used_token=access.create_invite(1,now)
+        self.assertTrue(access.redeem(2,used_token,now))
+        revoked,_=access.create_invite(1,now)
+        access.revoke_invite(1,revoked)
+        rows=access.list_invites(1,now)
+        self.assertEqual([row['id'] for row in rows],[pending])
+        self.assertEqual(set(rows[0]),{'id','expires_at'})
+        self.assertNotIn(token,str(rows))
+        with self.assertRaises(ValueError):access.list_invites(2,now)

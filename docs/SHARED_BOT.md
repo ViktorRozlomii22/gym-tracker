@@ -17,6 +17,8 @@ receives access. For now it is not bound to a predetermined Telegram ID. Keep it
 private. `/revokeinvite NUMBER` invalidates an unused invitation. A used or expired
 link cannot admit another account. Concurrent redemption admits only one account.
 
+`/invites` lists up to 100 latest active, unused invitations with their numbers and UTC expiry times. It omits used, revoked and expired links and never reveals link secrets. Use its numbers with `/revokeinvite NUMBER`.
+
 `/members` lists invited Telegram IDs and access status. `/blockuser ID` suspends
 access without deleting records; `/unblockuser ID` restores it. A blocked account
 cannot rejoin using another invitation. These commands cannot suspend the owner.

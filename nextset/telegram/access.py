@@ -4,7 +4,7 @@ from nextset.storage import access
 from nextset.telegram.diary import send_chunks
 
 HELP = ('👥 Учасники\n/invite — одноразове запрошення на 7 днів\n'
-        '/members — учасники та їхні Telegram ID\n/revokeinvite номер — скасувати невикористане запрошення\n'
+        '/members — учасники та їхні Telegram ID\n/invites — активні невикористані запрошення\n/revokeinvite номер — скасувати невикористане запрошення\n'
         '/blockuser ID — призупинити доступ\n/unblockuser ID — повернути доступ\n'
         'ШІ доступний лише адміністратору. Оплата не підключена.')
 
@@ -29,7 +29,7 @@ async def route(update, context):
         admin=access.is_admin(update.effective_user.id)
         await update.message.reply_text(f'Твій Telegram ID: {update.effective_user.id}\nРоль: '+('адміністратор' if admin else 'запрошений учасник')+'\nШІ: '+('доступний' if admin else 'зараз лише для адміністратора')+'\nТренування, нотатки, виміри й експорт належать твоєму акаунту.')
         return True
-    match = re.fullmatch(r'/(invite|members|revokeinvite|blockuser|unblockuser)(?:@\w+)?(?:\s+(.*))?', text)
+    match = re.fullmatch(r'/(invite|invites|members|revokeinvite|blockuser|unblockuser)(?:@\w+)?(?:\s+(.*))?', text)
     if text != '👥 Учасники' and not match:
         return False
     uid = update.effective_user.id
@@ -52,6 +52,12 @@ async def route(update, context):
                 # Even an uncertain delivery must not leave an unmanaged live link.
                 access.revoke_invite(uid,identifier)
                 raise
+        elif command == 'invites':
+            rows = access.list_invites(uid)
+            message = ('Активні невикористані запрошення (до 100 останніх):\n' +
+                '\n'.join(f"№{row['id']} — до {row['expires_at'][:19]} UTC" for row in rows) +
+                '\nСкасувати: /revokeinvite номер') if rows else 'Активних невикористаних запрошень немає. /invite'
+            await send_chunks(update.message,message)
         elif command == 'members':
             rows = access.list_members(uid)
             await send_chunks(update.message,'👥 Учасники\n'+'\n'.join(f'{row["user_id"]} — '+('активний' if row['active'] else 'доступ призупинено') for row in rows) if rows else 'Запрошених учасників ще немає. /invite')

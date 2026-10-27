@@ -96,3 +96,14 @@ def recipients():
     if owner is not None:
         users.add(owner)
     return sorted(users)
+
+
+def list_invites(uid, now=None):
+    """List actionable invitation metadata without revealing bearer secrets."""
+    require_admin(uid)
+    now = now or datetime.now(timezone.utc)
+    with db.connection() as connection:
+        rows = connection.execute(
+            'SELECT id,expires_at FROM invitations WHERE used_by IS NULL AND revoked=0 ORDER BY id DESC'
+        ).fetchall()
+    return [dict(row) for row in rows if datetime.fromisoformat(row['expires_at']) > now][:100]

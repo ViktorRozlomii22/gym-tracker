@@ -62,13 +62,16 @@ async def route(update, context):
             rows = access.list_members(uid)
             await send_chunks(update.message,'👥 Учасники\n'+'\n'.join(f'{row["user_id"]} — '+('активний' if row['active'] else 'доступ призупинено') for row in rows) if rows else 'Запрошених учасників ще немає. /invite')
         else:
-            if not arg or not arg.isdecimal() or int(arg) < 1:
+            if not arg or not arg.isdecimal():
                 raise ValueError('Потрібен додатний цілий номер.\n'+HELP)
+            identifier = int(arg)
+            if not 1 <= identifier <= 9223372036854775807:
+                raise ValueError('Номер має бути від 1 до 9223372036854775807. Перевір ID через /members або /invites.')
             if command == 'revokeinvite':
-                changed = access.revoke_invite(uid,int(arg))
+                changed = access.revoke_invite(uid,identifier)
                 await update.message.reply_text('Запрошення скасовано.' if changed else 'Активного невикористаного запрошення з таким номером немає.')
             else:
-                access.set_active(uid,int(arg),command == 'unblockuser')
+                access.set_active(uid,identifier,command == 'unblockuser')
                 await update.message.reply_text('Доступ повернуто.' if command == 'unblockuser' else 'Доступ призупинено. Особисті записи збережено.')
     except ValueError as error:
         await update.message.reply_text(str(error))

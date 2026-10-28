@@ -106,3 +106,19 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(db.setting('owner'))
         await guard(self.update(2,'/start test-pair-code'),context)
         self.assertEqual(db.setting('owner'),2)
+
+    async def test_out_of_range_admin_ids_are_rejected_without_mutations(self):
+        identifier,token=access.create_invite(1)
+        access.redeem(2,token)
+        pending,_=access.create_invite(1)
+        for command in ('blockuser','unblockuser','revokeinvite'):
+            for value in ('0','9223372036854775808','9'*100):
+                update=self.update(1,f'/{command} {value}')
+                with self.subTest(command=command,value=value):
+                    self.assertTrue(await route(update,None))
+                    self.assertIn('Номер має бути',update.message.reply_text.call_args.args[0])
+                    self.assertTrue(access.allowed(2))
+                    self.assertEqual([row['id'] for row in access.list_invites(1)],[pending])
+        update=self.update(1,f'/revokeinvite {pending}')
+        await route(update,None)
+        self.assertEqual(access.list_invites(1),[])

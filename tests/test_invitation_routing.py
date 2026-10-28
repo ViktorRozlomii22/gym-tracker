@@ -95,3 +95,14 @@ class InvitationRouting(Access, unittest.IsolatedAsyncioTestCase):
         update=self.update(1,'/invites')
         await route(update,None)
         self.assertIn('немає',update.message.reply_text.call_args.args[0])
+
+    async def test_unpaired_bot_rejects_unicode_text_without_crashing(self):
+        import nextset.storage.database as db
+        db.set_setting('owner',None)
+        context=SimpleNamespace(application=SimpleNamespace(bot_data={'pair_code':'test-pair-code'}))
+        for text in ('Привіт','/start неправильний-код','💪 Почати тренування',None):
+            with self.subTest(text=text),self.assertRaises(ApplicationHandlerStop):
+                await guard(self.update(2,text),context)
+            self.assertIsNone(db.setting('owner'))
+        await guard(self.update(2,'/start test-pair-code'),context)
+        self.assertEqual(db.setting('owner'),2)

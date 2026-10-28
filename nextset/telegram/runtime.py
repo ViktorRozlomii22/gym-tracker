@@ -27,7 +27,7 @@ async def guard(update,context):
     owner = db.setting('owner')
     if owner is None:
         expected = '/start ' + context.application.bot_data['pair_code']
-        if secrets.compare_digest(update.message.text or '',expected):
+        if secrets.compare_digest((update.message.text or '').encode('utf-8'),expected.encode('utf-8')):
             db.set_setting('owner',update.effective_user.id)
             print('Owner paired. Bot is ready.',flush=True)
             return

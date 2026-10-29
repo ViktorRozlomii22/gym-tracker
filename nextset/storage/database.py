@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from nextset.platform.paths import DATA_DIR
-from nextset.core.diary_entries import note_text
+from nextset.core.diary_entries import note_text, record_id as validate_record_id
 from nextset.core.constants import DEFAULT_STRENGTH_EXERCISES, DEFAULT_CARDIO_EXERCISES
 
 STRENGTH_TYPE, CARDIO_TYPE = 'strength', 'cardio'
@@ -128,11 +128,13 @@ def get_training_exercises(training_id):
     return result
 
 def delete_exercise_record(user_id, exercise_id):
+    exercise_id = validate_record_id(exercise_id)
     with connection() as c:
         return bool(c.execute('DELETE FROM training_exercises WHERE exercise_id=? AND training_id IN (SELECT training_id FROM trainings WHERE user_id=?)', (exercise_id,user_id)).rowcount)
 
 
 def update_diary_note(user_id, kind, record_id, note, set_number=None):
+    record_id = validate_record_id(record_id)
     note_text(note)
     with connection() as c:
         if kind == 'training':

@@ -72,3 +72,24 @@ class NoteCommands(DiaryNotes,unittest.IsolatedAsyncioTestCase):
         message.text=f'/setnote {self.exercise} 1;'
         await route(update,None)
         self.assertEqual(db.get_training_exercises(self.training)[0]['sets'][0]['note'],'')
+
+    async def test_out_of_range_note_and_delete_ids_are_rejected_without_changes(self):
+        from nextset.telegram import diary
+        from telegram.ext import ApplicationHandlerStop
+        for command in ('/note','/setnote','/trainingnote','/delete','/measure_delete'):
+            for identifier in ('0','9223372036854775808','9'*100):
+                text=f'{command} {identifier}'
+                if command=='/setnote':text+=' 1; rejected'
+                elif command in ('/note','/trainingnote'):text+='; rejected'
+                message=SimpleNamespace(text=text,message_id=10,reply_text=AsyncMock())
+                update=SimpleNamespace(message=message,effective_user=SimpleNamespace(id=1))
+                context=SimpleNamespace(user_data={},application=SimpleNamespace(bot_data={}))
+                with self.subTest(command=command,identifier=identifier):
+                    with self.assertRaises(ApplicationHandlerStop):
+                        await diary.extras(update,context)
+                    self.assertIn('Номер запису має бути',message.reply_text.call_args.args[0])
+                    self.assertEqual(len(db.get_training_exercises(self.training)),1)
+                    self.assertEqual(db.get_training_exercises(self.training)[0]['details'],' Важкий день')
+        for identifier in (True,-1,2**63):
+            with self.assertRaises(ValueError):db.delete_exercise_record(1,identifier)
+            with self.assertRaises(ValueError):db.update_diary_note(1,'exercise',identifier,'bad')

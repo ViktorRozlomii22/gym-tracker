@@ -28,3 +28,16 @@ def parse_sets(text):
             item['note'] = note_text(note)
         result.append(item)
     return result
+
+
+def record_id(value):
+    """Validate externally supplied record identifiers before SQLite binding."""
+    if isinstance(value, bool) or not isinstance(value, (str, int)):
+        raise ValueError('Номер запису має бути додатним цілим числом.')
+    text = str(value)
+    if not text.isdecimal() or len(text) > 19:
+        raise ValueError('Номер запису має бути від 1 до 9223372036854775807.')
+    number = int(text)
+    if not 1 <= number <= 9223372036854775807:
+        raise ValueError('Номер запису має бути від 1 до 9223372036854775807.')
+    return number

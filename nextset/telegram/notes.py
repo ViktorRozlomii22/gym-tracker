@@ -1,6 +1,7 @@
 """Explicit note editing; notes are data, never coaching instructions."""
 import re
 import nextset.storage.database as db
+from nextset.core.diary_entries import record_id
 
 HELP = ('📝 Нотатки\nДо підходу під час запису: 70x10; боліло коліно\n'
         'До вже збереженого підходу: /setnote 12 2; текст\n'
@@ -30,7 +31,7 @@ async def route(update, context):
         if not separator or len(ids) != expected or not all(x.isdecimal() for x in ids):
             raise ValueError(HELP)
         kind = {'note': 'exercise', 'setnote': 'set', 'trainingnote': 'training'}[command]
-        db.update_diary_note(update.effective_user.id, kind, int(ids[0]), note,
+        db.update_diary_note(update.effective_user.id, kind, record_id(ids[0]), note,
                              int(ids[1]) if expected == 2 else None)
         await update.message.reply_text('✅ Нотатку збережено. /history' if note else 'Нотатку видалено. /history')
         await clarify_pain(update,note)

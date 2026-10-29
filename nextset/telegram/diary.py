@@ -245,7 +245,8 @@ async def extras(update, context):
             db.save_measurement(update.effective_user.id,normalized,f'measure:{update.effective_user.id}:{update.message.message_id}')
             await update.message.reply_text('✅ Виміри збережено: ' + normalized)
         elif cmd in ('/delete','/measure_delete'):
-            uid, record = update.effective_user.id, int(arg)
+            from nextset.core.diary_entries import record_id
+            uid, record = update.effective_user.id, record_id(arg)
             if cmd == '/delete':
                 success = db.delete_exercise_record(uid,record)
             else:

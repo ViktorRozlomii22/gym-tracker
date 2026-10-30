@@ -85,8 +85,17 @@ def parse_measurements(text):
 
 
 async def send_chunks(message, text, **kwargs):
-    for start in range(0, len(text), 3800):
-        await message.reply_text(text[start:start+3800], **kwargs)
+    # Telegram measures text length in UTF-16 units: emoji outside the BMP
+    # consume two units. A Python slice of 3800 characters can exceed its limit.
+    start = units = 0
+    for index, char in enumerate(text):
+        width = 2 if ord(char) > 0xFFFF else 1
+        if units + width > 3800:
+            await message.reply_text(text[start:index], **kwargs)
+            start, units = index, 0
+        units += width
+    if start < len(text):
+        await message.reply_text(text[start:], **kwargs)
 
 
 def exercise_description(e):

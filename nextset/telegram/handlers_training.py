@@ -98,18 +98,16 @@ async def show_finish_summary(update: Update, context: ContextTypes.DEFAULT_TYPE
     strength_count = 0
     cardio_count = 0
     
-    for i, exercise in enumerate(current_training['exercises'], 1):
+    from nextset.telegram.diary import exercise_description, send_chunks
+    for exercise in current_training['exercises']:
         if exercise.get('is_cardio'):
             cardio_count += 1
-            report += f"🏃 {i}. {exercise['name']}\n"
-            report += f"   Подробиці: {exercise['details']}\n\n"
         else:
             strength_count += 1
-            report += f"💪 {i}. {exercise['name']}\n"
-            for j, set_data in enumerate(exercise['sets'], 1):
-                report += f"   {j}. {set_data['weight']}кг × {set_data['reps']}\n"
-            report += "\n"
-    
+        report += exercise_description(exercise) + '\n\n'
+    if current_training.get('comment'):
+        report += '📝 Тренування: ' + current_training['comment'] + '\n\n'
+
     report += f"📊 Усього вправ: {total_exercises}\n"
     report += f"• Силових: {strength_count}\n"
     report += f"• Кардіо: {cardio_count}\n"
@@ -119,7 +117,7 @@ async def show_finish_summary(update: Update, context: ContextTypes.DEFAULT_TYPE
         ['🔙 Продовжити тренування']
     ]
     
-    await update.message.reply_text(
+    await send_chunks(update.message,
         report,
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     )

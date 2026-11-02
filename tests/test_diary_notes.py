@@ -93,3 +93,28 @@ class NoteCommands(DiaryNotes,unittest.IsolatedAsyncioTestCase):
         for identifier in (True,-1,2**63):
             with self.assertRaises(ValueError):db.delete_exercise_record(1,identifier)
             with self.assertRaises(ValueError):db.update_diary_note(1,'exercise',identifier,'bad')
+
+    async def test_finish_summary_preserves_notes_and_splits_long_emoji_text(self):
+        from nextset.telegram.handlers_training import show_finish_summary
+        from nextset.core.constants import CONFIRM_FINISH
+        db.update_diary_note(1,'training',self.training,'Погано спав')
+        db.update_diary_note(1,'set',self.exercise,'💪'*1000,1)
+        db.update_diary_note(1,'set',self.exercise,'📝'*1000,2)
+        message=SimpleNamespace(from_user=SimpleNamespace(id=1),reply_text=AsyncMock())
+        update=SimpleNamespace(message=message,effective_user=SimpleNamespace(id=1))
+        result=await show_finish_summary(update,SimpleNamespace(user_data={'training_id':self.training}))
+        self.assertEqual(result,CONFIRM_FINISH)
+        chunks=[call.args[0] for call in message.reply_text.await_args_list]
+        self.assertGreater(len(chunks),1)
+        text=''.join(chunks)
+        self.assertIn(' Важкий день',text)
+        self.assertIn('Погано спав',text)
+        self.assertIn('💪'*1000,text)
+        self.assertIn('📝'*1000,text)
+        self.assertIn('70 кг × 10',text)
+        self.assertIn('60 кг × 8',text)
+        for chunk in chunks:
+            self.assertLessEqual(len(chunk.encode('utf-16-le'))//2,3800)
+        self.assertIsNone(db.get_current_training(1)['date_end'])
+        keyboard=str(message.reply_text.call_args.kwargs['reply_markup'])
+        self.assertIn('Підтвердити завершення',keyboard)

@@ -188,7 +188,7 @@ async def handle_clear_data_choice(update: Update, context: ContextTypes.DEFAULT
         # Завершаем текущую тренировку и начинаем новую
         current_training = get_current_training(user_id)
         if current_training:
-            finish_training(current_training['training_id'], "Автозавершена")
+            finish_training(current_training['training_id'])
         
         from nextset.telegram.handlers_training import start_training
         return await start_training(update, context)

@@ -38,6 +38,16 @@ class Tests(unittest.IsolatedAsyncioTestCase):
         db.add_exercise_to_training(t['training_id'],e)
         return t
 
+    async def test_starting_another_workout_preserves_previous_note(self):
+        from nextset.telegram.handlers_common import handle_clear_data_choice
+        previous = self.seed()['training_id']
+        db.update_diary_note(self.uid, 'training', previous, 'Моя нотатка')
+        self.msg.text = '🆕 Почати нове тренування'
+        await handle_clear_data_choice(self.update, self.ctx)
+        completed = db.get_user_trainings(self.uid)
+        self.assertEqual(completed[0]['training_id'], previous)
+        self.assertEqual(completed[0]['comment'], 'Моя нотатка')
+
     async def test_guided_session_and_history(self):
         self.assertEqual(await training.start_training(self.update,self.ctx),INPUT_MEASUREMENTS_CHOICE)
         self.msg.text='⏭️ Пропустити виміри'

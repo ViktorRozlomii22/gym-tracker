@@ -63,6 +63,27 @@ class DiaryNotes(unittest.TestCase):
         self.assertEqual(detail['K3'].value,' відмова')
 
 
+    def test_legacy_exercise_without_sets_keeps_note_in_excel_and_csv(self):
+        # Older or restored records may contain no set data; the export has an
+        # explicit branch for them and must not replace their exercise note.
+        with db.connection() as connection:
+            connection.execute('UPDATE training_exercises SET sets=? WHERE exercise_id=?',('[]',self.exercise))
+        db.finish_training(self.training)
+        for note in ('Нотатка зі старого запису','=SUM(1,2)'):
+            with self.subTest(note=note):
+                db.update_diary_note(1,'exercise',self.exercise,note)
+                expected="'"+note if note.startswith('=') else note
+                book=load_workbook(io.BytesIO(generate_excel_report(1,'all_time')))
+                detail=book.worksheets[2]
+                self.assertEqual(detail['J2'].value,expected)
+                self.assertNotEqual(detail['J2'].data_type,'f')
+                self.assertIsNone(detail['E2'].value)
+                self.assertIsNone(detail['F2'].value)
+                rows=list(csv.reader(io.StringIO(generate_csv_export(1))))
+                self.assertEqual(rows[1][9],expected)
+                self.assertEqual(rows[1][4:6],['',''])
+
+
 class NoteCommands(DiaryNotes,unittest.IsolatedAsyncioTestCase):
     async def test_command_edit_clear_and_pain_clarification(self):
         message=SimpleNamespace(text=f'/setnote {self.exercise} 1; боліло коліно',reply_text=AsyncMock())

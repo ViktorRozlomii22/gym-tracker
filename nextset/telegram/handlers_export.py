@@ -210,7 +210,7 @@ def generate_excel_report(user_id: int, period_type: str):
                     ws2.cell(row=dr, column=7, value="")
                     ws2.cell(row=dr, column=8, value="")
                     ws2.cell(row=dr, column=9, value="")
-                    ws2.cell(row=dr, column=10, value="Немає даних про підходи")
+                    ws2.cell(row=dr, column=10, value=exercise.get("details") or "Немає даних про підходи")
                     dr += 1
                     continue
                 for si, set_data in enumerate(sets_list, 1):

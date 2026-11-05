@@ -395,10 +395,16 @@ async def handle_set_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         if 'current_exercise' not in context.user_data:
             context.user_data['current_exercise'] = {'sets': []}
         
-        if len(context.user_data['current_exercise']['sets']) + len(valid_sets) > 100:
-            await update.message.reply_text('Максимум 100 підходів на вправу.')
-            return INPUT_SETS
-        context.user_data['current_exercise']['sets'].extend(valid_sets)
+        exercise = context.user_data['current_exercise']
+        message_id = update.message.message_id
+        processed = exercise.setdefault('_set_message_ids', [])
+        if message_id not in processed:
+            if len(exercise['sets']) + len(valid_sets) > 100:
+                await update.message.reply_text('Максимум 100 підходів на вправу.')
+                return INPUT_SETS
+            exercise['sets'].extend(valid_sets)
+            # Record before replying: delivery failure must not duplicate this batch.
+            processed.append(message_id)
         
         sets_count = len(context.user_data['current_exercise']['sets'])
         sets_text = "✅ Поточні підходи:\n"

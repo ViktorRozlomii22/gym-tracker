@@ -68,6 +68,27 @@ class Tests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('65 кг × 6',text)
         self.assertIn('Жим лежачи',text)
 
+    async def test_guided_set_retry_after_delivery_failure(self):
+        await training.start_training(self.update, self.ctx)
+        self.msg.text = 'Жим лежачи'
+        await training.handle_strength_exercise_selection(self.update, self.ctx)
+        self.msg.text = '70x10; відмова\n65x8'
+        self.msg.reply_text.side_effect = RuntimeError('delivery failed')
+        with self.assertRaises(RuntimeError):
+            await training.handle_set_input(self.update, self.ctx)
+        self.msg.reply_text.side_effect = None
+        await training.handle_set_input(self.update, self.ctx)
+        self.assertEqual(len(self.ctx.user_data['current_exercise']['sets']), 2)
+        # Equal sets in a different message are an intentional additional batch.
+        self.msg.message_id += 1
+        await training.handle_set_input(self.update, self.ctx)
+        self.assertEqual(len(self.ctx.user_data['current_exercise']['sets']), 4)
+        self.msg.message_id += 1
+        await training.save_exercise(self.update, self.ctx)
+        sets = db.get_current_training(self.uid)['exercises'][0]['sets']
+        self.assertEqual(len(sets), 4)
+        self.assertIn('відмова', sets[0]['note'])
+
     async def test_invalid_batch_atomic(self):
         await training.start_training(self.update,self.ctx)
         self.msg.text='Жим лежачи'

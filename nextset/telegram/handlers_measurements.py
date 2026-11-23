@@ -32,7 +32,8 @@ async def show_measurements_history(update: Update, context: ContextTypes.DEFAUL
     
     measurements_text += f"Усього записів: {len(measurements)}"
     
-    await update.message.reply_text(
+    from nextset.telegram.diary import send_chunks
+    await send_chunks(update.message,
         measurements_text,
         reply_markup=ReplyKeyboardMarkup([
             ['💪 Почати тренування', '📊 Історія тренувань'],

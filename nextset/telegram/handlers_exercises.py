@@ -34,7 +34,8 @@ async def show_exercises_management(update: Update, context: ContextTypes.DEFAUL
         ['🔙 Головне меню']
     ]
     
-    await update.message.reply_text(
+    from nextset.telegram.diary import send_chunks
+    await send_chunks(update.message,
         exercises_text,
         reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     )

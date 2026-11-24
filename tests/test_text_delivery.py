@@ -51,3 +51,26 @@ class TextDelivery(unittest.IsolatedAsyncioTestCase):
         for call in calls:
             self.assertLessEqual(len(call.args[0].encode('utf-16-le'))//2, 3800)
         self.assertIsNotNone(calls[-1].kwargs.get('reply_markup'))
+
+    async def test_large_exercise_catalog_preserves_names_and_management_buttons(self):
+        from nextset.telegram.handlers_exercises import show_exercises_management
+        from nextset.core.constants import EXERCISES_MANAGEMENT
+        strength = [f'Вправа {i} ' + '💪'*30 for i in range(100)]
+        cardio = ['Біг', 'Велосипед']
+        message = SimpleNamespace(from_user=SimpleNamespace(id=42), reply_text=AsyncMock())
+        with patch('nextset.telegram.handlers_exercises.get_visible_exercise_lists',
+                   return_value=dict(strength=strength, cardio=cardio)) as catalog:
+            state = await show_exercises_management(SimpleNamespace(message=message), None)
+        catalog.assert_called_once_with(42)
+        self.assertEqual(state, EXERCISES_MANAGEMENT)
+        calls = message.reply_text.await_args_list
+        self.assertGreater(len(calls), 1)
+        expected = '📝 Твої вправи:\n\n💪 Силові:\n'
+        expected += ''.join(f'• {name}\n' for name in strength)
+        expected += '\n🏃 Кардіо:\n' + ''.join(f'• {name}\n' for name in cardio)
+        self.assertEqual(''.join(call.args[0] for call in calls), expected)
+        for call in calls:
+            self.assertLessEqual(len(call.args[0].encode('utf-16-le'))//2, 3800)
+        buttons = calls[-1].kwargs['reply_markup'].keyboard
+        self.assertEqual(buttons[0][0].text, '➕ Додати вправу')
+        self.assertEqual(buttons[0][1].text, '🗑️ Видалити вправу')

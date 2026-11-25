@@ -604,8 +604,9 @@ async def save_cardio_exercise(update: Update, context: ContextTypes.DEFAULT_TYP
         exercise_data['source_key'] = f"cardio:{update.effective_user.id}:{update.message.message_id}"
         
         if format_type == 'min_meters':
-            # ПРЕОБРАЗУЕМ В INT для distance_meters
-            distance_meters = int(value)  # ← ВАЖНО!
+            if not value.is_integer():
+                raise ValueError('Distance must be a whole number of meters')
+            distance_meters = int(value)
             
             exercise_data.update({
                 'time_minutes': time_minutes,

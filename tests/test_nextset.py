@@ -197,6 +197,28 @@ class Tests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaises(ValueError):
                 local_ai.validate(value)
 
+    async def test_cardio_distance_rejects_fractional_meters_without_saving(self):
+        await training.start_training(self.update, self.ctx)
+        self.ctx.user_data['current_exercise'] = {'name': 'Біг', 'type': 'cardio'}
+        for text in ('30 0,5', '30 5000.9'):
+            self.msg.text = text
+            state = await training.save_cardio_exercise(self.update, self.ctx, 'min_meters')
+            self.assertEqual(state, INPUT_CARDIO_MIN_METERS)
+            self.assertEqual(db.get_current_training(self.uid)['exercises'], [])
+            self.assertIn('current_exercise', self.ctx.user_data)
+        self.msg.text = '30 5000'
+        self.assertEqual(await training.save_cardio_exercise(self.update, self.ctx, 'min_meters'), TRAINING_MENU)
+        rows = db.get_current_training(self.uid)['exercises']
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['distance_meters'], 5000)
+
+    async def test_cardio_speed_keeps_decimal_comma(self):
+        await training.start_training(self.update, self.ctx)
+        self.ctx.user_data['current_exercise'] = {'name': 'Біг', 'type': 'cardio'}
+        self.msg.text = '30 9,5'
+        await training.save_cardio_exercise(self.update, self.ctx, 'km_h')
+        self.assertEqual(db.get_current_training(self.uid)['exercises'][0]['speed_kmh'], 9.5)
+
     async def test_cardio_invalid(self):
         await training.start_training(self.update,self.ctx)
         self.ctx.user_data['current_exercise']={'name':'Біг','type':'cardio'}

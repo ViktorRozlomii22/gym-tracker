@@ -104,7 +104,10 @@ def add_exercise_to_training(training_id, exercise_data):
             raise ValueError('Додай від 1 до 100 підходів.')
         for s in sets:
             note_text(s.get('note', ''))
-            if not math.isfinite(s['weight']) or not 0 <= s['weight'] <= 1000 or not isinstance(s['reps'], int) or not 1 <= s['reps'] <= 1000:
+            if (isinstance(s['weight'], bool) or not isinstance(s['weight'], (int, float))
+                    or not math.isfinite(s['weight']) or not 0 <= s['weight'] <= 1000
+                    or isinstance(s['reps'], bool) or not isinstance(s['reps'], int)
+                    or not 1 <= s['reps'] <= 1000):
                 raise ValueError('Вага: 0–1000 кг; повторення: 1–1000.')
     elif e['type'] != CARDIO_TYPE:
         raise ValueError('Невідомий тип вправи.')

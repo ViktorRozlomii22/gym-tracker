@@ -48,6 +48,19 @@ class DiaryNotes(unittest.TestCase):
         self.assertEqual(parse_sets('70/10')[0],dict(weight=70,reps=10))
         self.assertEqual(quick_parse('Жим 3x10 70 кг; Нотатка')['details'],' Нотатка')
 
+    def test_storage_rejects_non_numeric_and_boolean_sets_atomically(self):
+        before = db.get_training_exercises(self.training)
+        for weight, reps in ((True, 10), (False, 10), (70, True), (70, False),
+                             ('70', 10), (None, 10), (70, 10.5)):
+            with self.subTest(weight=weight, reps=reps), self.assertRaises(ValueError):
+                db.add_exercise_to_training(self.training, dict(name='Присідання',
+                    type='strength', sets=[dict(weight=60, reps=8),
+                                          dict(weight=weight, reps=reps)]))
+            self.assertEqual(db.get_training_exercises(self.training), before)
+        self.assertTrue(db.add_exercise_to_training(self.training, dict(name='Віджимання',
+            type='strength', sets=[dict(weight=0, reps=10), dict(weight=2.5, reps=8)])))
+        self.assertEqual(len(db.get_training_exercises(self.training)), 2)
+
     def test_exports_keep_all_three_note_scopes(self):
         db.update_diary_note(1,'training',self.training,'Сон')
         db.update_diary_note(1,'set',self.exercise,'=1+1',1)
